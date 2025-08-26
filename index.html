@@ -131,6 +131,8 @@
 /* body */
 .table tbody td{
   padding:12px;
+  text-align: center;
+  vertical-align: middle;
   border-bottom:1px solid rgba(255,255,255,.08);  /* garis horizontal */
   border-right:1px solid rgba(255,255,255,.06);   /* garis vertikal */
 }
@@ -155,7 +157,7 @@
   color: #f4c542;
   font-weight: 700;
   padding: 12px;
-  text-align: left;
+  text-align: center;
   border-bottom: 1px solid rgba(255,255,255,.15);
 }
 
@@ -171,8 +173,16 @@
 .table tbody tr:hover {
   background: rgba(255,255,255,.03);
 }
+
+.btn:disabled{
+  opacity:.7;
+  cursor:not-allowed;
+  filter: grayscale(.1) brightness(.95);
+  transform:none;
+}
     
   </style>
+  
 </head>
 <body>
   <div class="wrap">
@@ -211,26 +221,39 @@
   $("#q").addEventListener("keydown",(e)=>{if(e.key==="Enter") search();});
   $("#go").addEventListener("click",()=>search());
 
+  let busy = false;
+
   function setLoading(v){
-    $("#loading").style.display=v?"block":"none";
-    const btn=$("#go");
-    btn.disabled=v;
-    btn.innerHTML=v?`<span class="spinner"></span><span>Memproses...</span><span class="dot"></span>`:`<span class="label">🔎 Cari</span><span class="dot"></span>`;
-  }
+  $("#loading").style.display = v ? "block" : "none";
+  const btn = $("#go");
+  const input = $("#q");
+  btn.disabled = v;
+  input.disabled = v;
+  btn.innerHTML = v
+    ? `<span class="spinner"></span><span>Memproses...</span><span class="dot"></span>`
+    : `<span class="label">🔎 Cari</span><span class="dot"></span>`;
+}
 
   async function search(){
-    const q=$("#q").value.trim();
-    $("#result").innerHTML="";
-    if(!q){toast("Isi User ID dulu ya",false);return;}
-    if(!WEB_APP_URL.includes("http")){toast("WEB_APP_URL belum diisi",false);return;}
-    setLoading(true);
-    try{
-      const res=await fetch(WEB_APP_URL+"?searchtext="+encodeURIComponent(q));
-      const data=await res.json();
-      renderResult(q,Array.isArray(data)?data:[]);
-    }catch(e){toast("Gagal konek server",false);}
-    finally{setLoading(false);}
+  if (busy) return;           // <-- hard block anti-spam
+  const q = $("#q").value.trim();
+  $("#result").innerHTML = "";
+  if(!q){ toast("Isi User ID dulu ya", false); return; }
+  if(!WEB_APP_URL.includes("http")){ toast("WEB_APP_URL belum diisi", false); return; }
+
+  busy = true;
+  setLoading(true);
+  try{
+    const res = await fetch(WEB_APP_URL + "?searchtext=" + encodeURIComponent(q));
+    const data = await res.json();
+    renderResult(q, Array.isArray(data) ? data : []);
+  }catch(e){
+    toast("Gagal konek server", false);
+  }finally{
+    setLoading(false);
+    busy = false;
   }
+}
 
   function escapeHTML(s){
     return String(s).replace(/[&<>"']/g, m => ({
