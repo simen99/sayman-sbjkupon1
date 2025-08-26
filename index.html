@@ -118,31 +118,7 @@
   border:1px solid rgba(255,255,255,.10);   /* frame luar */
   border-radius:10px; overflow:hidden;
 }
-
-/* header */
-.table thead th{
-  background:#15151f; color:#f4c542; font-weight:700; padding:12px; text-align:center;
-  border-bottom:1px solid rgba(255,255,255,.14);
-  /* garis vertikal header */
-  border-right:1px solid rgba(255,255,255,.08);
-}
-.table thead th:last-child{ border-right:none; }
-
-/* body */
-.table tbody td{
-  padding:12px;
-  text-align: center;
-  vertical-align: middle;
-  border-bottom:1px solid rgba(255,255,255,.08);  /* garis horizontal */
-  border-right:1px solid rgba(255,255,255,.06);   /* garis vertikal */
-}
     
-.table tbody tr:last-child td{ border-bottom:none; }
-.table tbody td:last-child{ border-right:none; }
-
-/* efek hover lembut */
-.table tbody tr:hover{ background:rgba(255,255,255,.03); }
-
     .status{display:inline-flex; align-items:center; gap:6px; font-size:12px; padding:6px 10px; border-radius:999px;
       border:1px solid rgba(33,208,122,.4); color:#bff7da; background:rgba(33,208,122,.1);}
     .status.err{border-color:rgba(255,92,122,.5); color:#ffd0da; background:rgba(255,92,122,.1)}
@@ -331,9 +307,23 @@ body { padding-bottom: calc(90px + env(safe-area-inset-bottom)); } /* ruang utk 
 }
 
 /* hasil/table: bisa digeser horizontal & tetap rapi */
-.card { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-.table { min-width: 560px; } /* supaya kolom tidak mepet dan terbaca di HP */
-.table thead th, .table tbody td { padding: 10px; }
+.card {
+  overflow-x: hidden;   /* matikan scroll horizontal */
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;      /* kolom otomatis rapat ke dalam container */
+}
+
+.table thead th, 
+.table tbody td {
+  padding: 10px;
+  word-wrap: break-word;    /* pecah kata panjang agar tetap muat */
+  white-space: normal;      /* biar teks boleh turun ke bawah */
+  text-align: center;       /* rata tengah biar elegan */
+}
 
 /* tombol copy di HP sedikit lebih besar */
 @media (max-width:560px){
