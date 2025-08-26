@@ -601,6 +601,25 @@ body { padding-bottom: calc(90px + env(safe-area-inset-bottom)); } /* ruang utk 
     box-shadow: 0 0 18px rgba(244,197,66,.4); /* glow halus */
   }
 }
+
+    /* tabel lebih lega & rata rapi */
+.table { border-collapse: separate; border-spacing: 0 10px; }
+.table thead th{ background:transparent; border:0; color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.25px; }
+.table tbody tr{
+  background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.025));
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;
+  overflow:hidden;
+  box-shadow:0 8px 24px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.03);
+}
+.table tbody td{
+  padding:16px 14px;
+  font-size:16px;
+  border-bottom:0 !important;
+}
+.table tbody td .code-val{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-weight:800; }
+.table tbody td:nth-child(1){ font-weight:800; }
+.table tbody td:nth-child(3){ font-weight:800; letter-spacing:.3px; }
     
   </style>
   
