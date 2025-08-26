@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pencarian Kupon • SlotBangJago</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0b0b0f;
+      --panel:#12121a;
+      --gold:#f4c542;
+      --gold2:#d6a400;
+      --text:#e9e9ef;
+      --muted:#a5a5b5;
+      --ok:#21d07a;
+      --err:#ff5c7a;
+      --ring: 0 0 0 2px rgba(244,197,66,.25), 0 8px 30px rgba(244,197,66,.15);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:Poppins,system-ui,Segoe UI,Roboto,Arial;
+      background: radial-gradient(1200px 600px at 10% -10%, rgba(244,197,66,.06), transparent 60%),
+                  radial-gradient(1200px 600px at 90% 110%, rgba(244,197,66,.06), transparent 60%),
+                  var(--bg);
+      color:var(--text);
+    }
+    .wrap{max-width:980px; margin:0 auto; padding:32px 16px 64px;}
+    .hero{display:flex; gap:18px; align-items:center; justify-content:space-between; flex-wrap:wrap; margin-bottom:18px;}
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 12px; border-radius:999px;
+      background:linear-gradient(180deg, rgba(244,197,66,.15), rgba(244,197,66,.05));
+      border:1px solid rgba(244,197,66,.25);
+      color:var(--gold);
+      box-shadow:var(--ring);
+      font-weight:600; letter-spacing:.2px;
+    }
+    .title{
+      font-size: clamp(22px, 3vw, 34px);
+      font-weight:800; line-height:1.1;
+      background: linear-gradient(180deg, #fff, #c9c9d6 55%, #9a9ab0);
+      -webkit-background-clip: text; background-clip:text; color:transparent; 
+      text-shadow: 0 0 12px rgba(244,197,66,.08);
+      margin: 6px 0 2px;
+    }
+    .subtitle{color:var(--muted); margin:0 0 18px}
+    .panel{
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:18px; padding:16px;
+      box-shadow: 0 10px 40px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.03);
+    }
+    .searchbar{display:grid; grid-template-columns: 1fr auto; gap:12px; align-items:center;}
+    .input{
+      width:100%; background:#0e0e15;
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:14px; color:var(--text);
+      padding:14px 16px; font-size:16px; outline:none;
+      transition:.2s border, .2s box-shadow, .2s transform;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,.35);
+    }
+    .input:focus{border-color: rgba(244,197,66,.55); box-shadow: var(--ring); transform: translateY(-1px);}
+    .btn{
+      position:relative; overflow:hidden;
+      appearance:none; border:0; cursor:pointer;
+      background: linear-gradient(180deg, var(--gold), var(--gold2));
+      color:#1a1a1a; font-weight:800; letter-spacing:.3px;
+      padding:14px 18px; border-radius:14px; min-width:140px; 
+      transition: transform .08s ease, filter .2s ease;
+      box-shadow: 0 10px 30px rgba(244,197,66,.25);
+    }
+    .btn:hover{filter:brightness(1.06)}
+    .btn:active{transform: translateY(1px) scale(.99)}
+    .btn .dot{
+      position:absolute; inset:0;
+      background: radial-gradient(300px 120px at var(--x,50%) var(--y,50%), rgba(255,255,255,.35), transparent 40%);
+      pointer-events:none; mix-blend-mode:soft-light;
+    }
+    .btn .spinner{
+      width:16px; height:16px; border-radius:50%;
+      border:2px solid rgba(0,0,0,.18); border-top-color:#000;
+      display:inline-block; vertical-align:-3px;
+      animation: spin 1s linear infinite; margin-right:8px;
+    }
+    @keyframes spin{to{transform: rotate(360deg)}}
+    .section{margin-top:18px}
+    .hint{color:var(--muted); font-size:13px; margin-top:8px}
+    .skeleton{border-radius:14px; background: linear-gradient(90deg, rgba(255,255,255,.06), rgba(255,255,255,.02) 40%, rgba(255,255,255,.06));
+      background-size: 600px 100%; animation: shimmer 1.2s infinite; height: 110px; margin-top:12px;}
+    @keyframes shimmer{0%{background-position:-600px 0}100%{background-position:600px 0}}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.025));
+      border:1px solid rgba(255,255,255,.08); border-radius:18px; padding:16px; margin-top:12px;}
+    .grid{display:grid; gap:12px; grid-template-columns: repeat(3, 1fr);}
+    .kv{background:#0e0e15; border:1px solid rgba(255,255,255,.06); border-radius:12px; padding:12px; min-height:64px; position:relative;}
+    .kv label{display:block; font-size:12px; color:var(--muted); margin-bottom:6px}
+    .kv .val{font-weight:700; letter-spacing:.2px}
+    .copy-btn{position:absolute; top:8px; right:8px; font-size:12px; background:transparent;
+      border:1px solid rgba(244,197,66,.6); color:var(--gold); border-radius:999px; padding:6px 9px; cursor:pointer;}
+    .copy-btn:hover{background: rgba(244,197,66,.08)}
+    .table{width:100%; border-collapse:collapse; margin-top:12px; font-size:14px; border-radius:12px; border:1px solid rgba(255,255,255,.08);}
+    .table thead th{background:#15151f; color:#dcdcf0; font-weight:700; padding:12px;}
+    .table tbody td{padding:12px; border-top:1px solid rgba(255,255,255,.06);}
+    .status{display:inline-flex; align-items:center; gap:6px; font-size:12px; padding:6px 10px; border-radius:999px;
+      border:1px solid rgba(33,208,122,.4); color:#bff7da; background:rgba(33,208,122,.1);}
+    .status.err{border-color:rgba(255,92,122,.5); color:#ffd0da; background:rgba(255,92,122,.1)}
+    .toast{position:fixed; right:16px; bottom:16px; z-index:9999; display:flex; flex-direction:column; gap:10px;}
+    .toast-item{padding:12px 14px; border-radius:12px; font-size:14px; background:#171722; color:#f2f2f8;
+      border:1px solid rgba(255,255,255,.08); display:flex; align-items:center; gap:10px;}
+    footer{margin-top:36px; color:var(--muted); font-size:12px; text-align:center}
+    @media (max-width: 720px){.grid{grid-template-columns:1fr} .btn{min-width:120px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero"><span class="badge">🏆 SlotBangJago • LuckySpin Lookup</span></div>
+    <h1 class="title">Cari Kupon & Validasi User ID</h1>
+    <p class="subtitle">Masukkan <b>User ID</b> kamu. Jika cocok, sistem akan menampilkan semua catatan kupon terkait.✨</p>
+
+    <div class="panel">
+      <div class="searchbar">
+        <input id="q" class="input" placeholder="Contoh: SBJ123456" autocomplete="off" />
+        <button id="go" class="btn"><span class="label">🔎 Cari</span><span class="dot"></span></button>
+      </div>
+      <div class="hint">Tekan <b>Enter</b> atau klik <b>Cari</b>.</div>
+    </div>
+
+    <div id="loading" class="skeleton" style="display:none;"></div>
+    <div id="result" class="section"></div>
+    <footer>© <span id="y"></span> SlotBangJago • Desain hitam–emas</footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const WEB_APP_URL = "PASTE_WEB_APP_URL_DI_SINI"; // ganti dengan Web App URL
+
+    const $ = (s,ctx=document)=>ctx.querySelector(s);
+    const el = (tag, cls)=>{const n=document.createElement(tag); if(cls) n.className=cls; return n;};
+    const fmtDate = (s)=>{const d=new Date(s); if(String(d)==="Invalid Date") return s||"-";
+      return d.toLocaleString("id-ID",{day:"2-digit",month:"long",year:"numeric"});};
+    const toast=(msg,ok=true)=>{const box=$("#toast");const t=el("div","toast-item");
+      t.innerHTML=ok?`✅ ${msg}`:`❌ ${msg}`;box.appendChild(t);
+      setTimeout(()=>{t.style.opacity="0";setTimeout(()=>t.remove(),300);},2500);};
+
+    $("#y").textContent=new Date().getFullYear();
+    $("#q").addEventListener("keydown",(e)=>{if(e.key==="Enter") search();});
+    $("#go").addEventListener("click",()=>search());
+
+    function setLoading(v){
+      $("#loading").style.display=v?"block":"none";
+      const btn=$("#go");
+      btn.disabled=v;
+      btn.innerHTML=v?`<span class="spinner"></span><span>Memproses...</span><span class="dot"></span>`:`<span class="label">🔎 Cari</span><span class="dot"></span>`;
+    }
+
+    async function search(){
+      const q=$("#q").value.trim();
+      $("#result").innerHTML="";
+      if(!q){toast("Isi User ID dulu ya",false);return;}
+      if(!WEB_APP_URL.includes("http")){toast("WEB_APP_URL belum diisi",false);return;}
+      setLoading(true);
+      try{
+        const res=await fetch(WEB_APP_URL+"?searchtext="+encodeURIComponent(q));
+        const data=await res.json();
+        renderResult(q,Array.isArray(data)?data:[]);
+      }catch(e){toast("Gagal konek server",false);}
+      finally{setLoading(false);}
+    }
+
+    function renderResult(q,rows){
+      const resultBox=$("#result");
+      if(!rows.length){const card=el("div","card");card.innerHTML=`<div class="status err">Tidak ditemukan: <b>${q}</b></div>`;resultBox.appendChild(card);return;}
+      confetti({particleCount:90,spread:60,origin:{y:0.3}});
+      const [u,kode,tgl]=rows[0];
+      const card=el("div","card");
+      card.innerHTML=`
+        <div class="status">Ditemukan • ${rows.length} entri</div>
+        <div class="grid">
+          <div class="kv"><label>User ID</label><div class="val">${u}</div></div>
+          <div class="kv"><label>Kode</label><button class="copy-btn" data-copy="${kode}">Copy</button><div class="val">${kode}</div></div>
+          <div class="kv"><label>Tanggal</label><div class="val">${fmtDate(tgl)}</div></div>
+        </div>`;
+      resultBox.appendChild(card);
+      const tableWrap=el("div","card");
+      const table=el("table","table");
+      table.innerHTML=`<thead><tr><th>User ID</th><th>Kode</th><th>Tanggal</th></tr></thead><tbody>${
+        rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]} <button class="copy-btn" data-copy="${r[1]}">Copy</button></td><td>${fmtDate(r[2])}</td></tr>`).join("")
+      }</tbody>`;
+      tableWrap.appendChild(table);resultBox.appendChild(tableWrap);
+      resultBox.addEventListener("click",(e)=>{if(e.target.matches(".copy-btn")){
+        navigator.clipboard.writeText(e.target.dataset.copy).then(()=>toast("Kode disalin")).catch(()=>toast("Gagal copy",false));}});
+    }
+  </script>
+</body>
+</html>
