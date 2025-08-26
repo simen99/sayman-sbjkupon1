@@ -941,6 +941,24 @@ const MINI_SLIDES = [
   goTo(0); play();
 })();
 </script>
+
+  <script>
+/* Polyfill object-fit:cover untuk browser lama (Android lawas/iOS lama) */
+(function(){
+  var test = 'objectFit' in document.documentElement.style;
+  if (test) return; // modern — aman
+
+  document.querySelectorAll('.ms-slide img').forEach(function(img){
+    var src = img.getAttribute('src');
+    var holder = img.parentNode;  // <a> di dalam .ms-slide
+    holder.style.backgroundImage  = 'url("'+src+'")';
+    holder.style.backgroundSize   = 'cover';
+    holder.style.backgroundRepeat = 'no-repeat';
+    holder.style.backgroundPosition = 'center';
+    img.style.opacity = '0';      // sembunyikan <img>, pakai background
+  });
+})();
+</script>
   
   <script>
     window.__lc = window.__lc || {};
