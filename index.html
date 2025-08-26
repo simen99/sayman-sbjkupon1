@@ -508,50 +508,66 @@ body { padding-bottom: calc(90px + env(safe-area-inset-bottom)); } /* ruang utk 
   50%   { opacity:.95 }
 }
 
-/* ===== Slider tipis 955 x 115 ===== */
-.mini-slider {
+/* ===== Slider tipis 900 x 174 — full cover, crop tengah, responsif ===== */
+.mini-slider{
+  /* set rasio sekali saja via variabel */
+  --ms-w: 900;
+  --ms-h: 174;
+
   position: relative;
-  width: 900px;     /* sesuai request */
-  max-width: 100%;  /* tetap responsif */
-  height: 174px;
+  width: 980px;          /* muat di layout kamu */
+  max-width: 100%;
   margin: 18px auto;
   border-radius: 12px;
   overflow: hidden;
-  background: #000; /* bar hitam kalau aspect ratio beda */
+  background: #000;      /* hanya terlihat saat loading */
+
+  /* browser modern: tinggi otomatis dari rasio */
+  aspect-ratio: var(--ms-w) / var(--ms-h);
 }
 
-.mini-slider img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;   /* ⚡ biar gambar utuh ga terpotong */
-  background: #000;      /* bar belakang hitam */
-  display: block;
-}
-    
-@media (max-width: 980px){
-  /* skala proporsional di mobile */
-  .mini-slider{ height:auto; aspect-ratio: 955 / 115; }
+/* Fallback untuk device lama yang belum dukung aspect-ratio */
+@supports not (aspect-ratio: 1 / 1) {
+  .mini-slider { height: auto; }
+  .mini-slider::before{
+    content:"";
+    display:block;
+    /* padding-top = (h/w)*100%  → menjaga rasio 900x174 */
+    padding-top: calc(var(--ms-h) / var(--ms-w) * 100%);
+  }
+  .mini-slider > .ms-track{
+    position:absolute; inset:0;  /* isi penuh kotak fallback */
+  }
 }
 
 .ms-track{
   width:100%; height:100%;
-  display:flex; transition:transform .45s ease;
+  display:flex;
+  transition: transform .45s ease;
   will-change: transform;
 }
 
 .ms-slide{
-  flex:0 0 100%; width:100%; height:100%;
+  flex:0 0 100%;
+  width:100%; height:100%;
 }
-.ms-slide img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;       /* isi full kotak */
-  object-position: center; /* fokus ke tengah, biar kiri/kanan yg kepotong */
-}
-    
-.ms-slide img{ object-fit: cover; }
 
-/* dots */
+.ms-slide a,
+.ms-slide img{
+  display:block;
+  width:100%;
+  height:100%;
+}
+
+/* KUNCI: penuh & crop rata tengah (atas–bawah sama besar) */
+.ms-slide img{
+  object-fit: cover;
+  object-position: center center;
+  /* kualitas lebih baik di beberapa WebView */
+  image-rendering: -webkit-optimize-contrast;
+}
+
+/* Dots */
 .ms-dots{
   position:absolute; left:0; right:0; bottom:8px;
   display:flex; gap:8px; justify-content:center; align-items:center;
