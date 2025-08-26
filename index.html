@@ -294,6 +294,57 @@
   .popup-dots{ bottom:10px; gap:10px; }
   .popup-dot{ width:12px; height:12px; }
 }
+
+/* ===== mobile polish & compatibility ===== */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body { padding-bottom: calc(90px + env(safe-area-inset-bottom)); } /* ruang utk bubble chat/notch */
+
+.wrap { max-width: 980px; }
+
+/* fallback kalau browser tua tak paham clamp() */
+.title { font-size: 26px; }
+@media (min-width:480px){ .title { font-size: 30px; } }
+@media (min-width:720px){ .title { font-size: 34px; } }
+
+/* Panel & grid */
+.panel { border-radius: 14px; }
+.subtitle { line-height: 1.45; }
+
+/* input: cegah auto-zoom iOS, perbesar tap area */
+.input {
+  font-size: 16px;      /* 16px penting supaya iOS tidak zoom */
+  min-height: 48px;
+  border-radius: 12px;
+}
+
+/* tombol cari: full-width di mobile, tebal & nyaman ditekan */
+.btn {
+  min-height: 48px;
+  border-radius: 12px;
+}
+@media (max-width: 560px){
+  .hero { justify-content: center; }
+  .wrap { padding: 24px 14px 100px; }       /* ruang bawah utk chat bubble */
+  .panel { padding: 14px; }
+  .searchbar { grid-template-columns: 1fr; gap: 10px; }
+  .btn { width: 100%; }
+}
+
+/* hasil/table: bisa digeser horizontal & tetap rapi */
+.card { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.table { min-width: 560px; } /* supaya kolom tidak mepet dan terbaca di HP */
+.table thead th, .table tbody td { padding: 10px; }
+
+/* tombol copy di HP sedikit lebih besar */
+@media (max-width:560px){
+  .copy-btn { padding: 10px 16px; font-size: 15px; }
+}
+
+/* prefer reduced motion: kurangi transisi untuk user sensitif */
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
     
   </style>
   
@@ -306,7 +357,8 @@
 
     <div class="panel">
       <div class="searchbar">
-        <input id="q" class="input" placeholder="Contoh: sempak234" autocomplete="off" />
+        <input id="q" class="input" placeholder="Contoh: sempak234"
+       autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text" />
         <button id="go" class="btn"><span class="label">🔎 Cari</span><span class="dot"></span></button>
       </div>
       <div class="hint">Tekan <b>Enter</b> atau klik <b>Cari</b>.</div>
