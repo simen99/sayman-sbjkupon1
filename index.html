@@ -660,13 +660,20 @@ body { padding-bottom: calc(90px + env(safe-area-inset-bottom)); } /* ruang utk 
 }
 
   async function search(){
-  if (busy) return;           // <-- hard block anti-spam
+  if (busy) return;           // blokir spam
   const q = $("#q").value.trim();
   $("#result").innerHTML = "";
   if(!q){ toast("Isi User ID dulu ya", false); return; }
   if(!WEB_APP_URL.includes("http")){ toast("WEB_APP_URL belum diisi", false); return; }
 
   busy = true;
+
+  // ⏸️ disable tombol
+  const btn = $("#go");
+  btn.disabled = true;
+  const oldLabel = btn.innerHTML;
+  btn.innerHTML = '<span class="spinner"></span> Mengecek...';
+
   setLoading(true);
   try{
     const res = await fetch(WEB_APP_URL + "?searchtext=" + encodeURIComponent(q));
@@ -677,6 +684,10 @@ body { padding-bottom: calc(90px + env(safe-area-inset-bottom)); } /* ruang utk 
   }finally{
     setLoading(false);
     busy = false;
+
+    // ✅ aktifkan lagi tombol
+    btn.disabled = false;
+    btn.innerHTML = oldLabel;
   }
 }
 
