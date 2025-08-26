@@ -553,9 +553,6 @@ body { padding-bottom: calc(90px + env(safe-area-inset-bottom)); } /* ruang utk 
 
   function setLoading(v){
   const box = $("#loading");
-  const btn = $("#go");
-  const input = $("#q");
-
   if(v){
     box.style.display = "block";
     box.innerHTML = `
@@ -563,16 +560,17 @@ body { padding-bottom: calc(90px + env(safe-area-inset-bottom)); } /* ruang utk 
       <div class="sk-bar"></div>
       <div class="sk-bar"></div>
     `;
-  }else{
+    // kasih random delay/arah tiap skeleton
+    box.querySelectorAll(".sk-bar").forEach(bar=>{
+      const dir = Math.random() > 0.5 ? "normal" : "reverse"; // arah random
+      const speed = (1.5 + Math.random()).toFixed(2);         // 1.5s – 2.5s
+      bar.style.animationDirection = dir;
+      bar.style.animationDuration = speed+"s";
+    });
+  } else {
     box.style.display = "none";
     box.innerHTML = "";
   }
-
-  btn.disabled = v;
-  input.disabled = v;
-  btn.innerHTML = v
-    ? `<span class="spinner"></span><span>Memproses...</span><span class="dot"></span>`
-    : `<span class="label">🔎 Cari</span><span class="dot"></span>`;
 }
 
   async function search(){
