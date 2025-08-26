@@ -377,6 +377,24 @@ body { padding-bottom: calc(90px + env(safe-area-inset-bottom)); } /* ruang utk 
   .table tbody td[data-label="Kode"] .code-val{ min-width:0; }
   .table tbody td[data-label="Kode"] .copy-btn{ flex:0 0 auto; }
 }
+
+    .play-btn {
+  display: block;
+  margin: 18px auto 0;
+  max-width: 280px;
+  text-align: center;
+  background: linear-gradient(180deg, var(--gold), var(--gold2));
+  color: #1a1a1a;
+  font-weight: 800;
+  font-size: 16px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  text-decoration: none;   /* Hapus garis hitam */
+  box-shadow: 0 10px 30px rgba(244,197,66,.25);
+  transition: transform .12s ease, filter .15s ease;
+}
+.play-btn:hover { filter: brightness(1.06); transform: translateY(-1px); }
+.play-btn:active { transform: scale(.98); }
     
   </style>
   
@@ -504,15 +522,11 @@ function renderResult(q, rows){
 
   // 👉 Tambah tombol PUTAR KUPON di bawah hasil
   const playBtn = document.createElement("a");
-  playBtn.href = "https://maxwinputar.com/lucky-wheel-slotbangjago/";
-  playBtn.target = "_blank";
-  playBtn.className = "btn";
-  playBtn.style.display = "block";
-  playBtn.style.margin = "18px auto 0";
-  playBtn.style.textAlign = "center";
-  playBtn.style.maxWidth = "280px";
-  playBtn.innerText = "🎰 PUTAR KUPON DISINI";
-  resultBox.appendChild(playBtn);
+playBtn.href = "https://maxwinputar.com/lucky-wheel-slotbangjago/";
+playBtn.target = "_blank";
+playBtn.className = "play-btn";
+playBtn.innerText = "🎰 PUTAR KUPON DISINI";
+resultBox.appendChild(playBtn);
 }
     
 
