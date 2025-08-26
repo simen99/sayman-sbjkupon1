@@ -436,7 +436,30 @@ body { padding-bottom: calc(90px + env(safe-area-inset-bottom)); } /* ruang utk 
     margin: 0 0 6px;
     padding: 0 10px;
   }
-}   
+}
+
+.floating-buttons {
+  position: fixed;
+  bottom: 80px;   /* naik sedikit agar tidak menabrak livechat */
+  left: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 9999;
+}
+
+.floating-buttons .float-btn img {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0,0,0,.45);
+  transition: transform 0.2s ease;
+}
+
+.floating-buttons .float-btn img:hover {
+  transform: scale(1.12);
+}
+
   </style>
   
 </head>
@@ -752,6 +775,16 @@ window.addEventListener("DOMContentLoaded", () => {
     <a href="https://www.livechat.com/chat-with/11798511/" rel="nofollow">Chat with us</a>,
     powered by <a href="https://www.livechat.com/?welcome" rel="noopener nofollow" target="_blank">LiveChat</a>
   </noscript>
+
+  <!-- Floating Buttons -->
+<div class="floating-buttons">
+  <a href="https://klikblg.com/wa-sbj" target="_blank" class="float-btn">
+    <img src="https://raw.githubusercontent.com/simen99/danakaget-papanataslot1/refs/heads/main/assets/whats-app.gif" alt="WhatsApp" />
+  </a>
+  <a href="https://klikblg.com/tele-sbj" target="_blank" class="float-btn">
+    <img src="https://raw.githubusercontent.com/simen99/danakaget-papanataslot1/refs/heads/main/assets/telegram-gif.gif" alt="Telegram" />
+  </a>
+</div>
 
 </body>
 </html>
