@@ -542,9 +542,13 @@ body { padding-bottom: calc(90px + env(safe-area-inset-bottom)); } /* ruang utk 
 .ms-slide{
   flex:0 0 100%; width:100%; height:100%;
 }
-.ms-slide a, .ms-slide img{
-  display:block; width:100%; height:100%;
+.ms-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;       /* isi full kotak */
+  object-position: center; /* fokus ke tengah, biar kiri/kanan yg kepotong */
 }
+    
 .ms-slide img{ object-fit:contain; background:#000; }
 
 /* dots */
