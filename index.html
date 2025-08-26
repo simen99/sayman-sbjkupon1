@@ -205,12 +205,12 @@
 
 .popup-wrap{
   position:relative;
-  width:600px; height:347px;       /* ukuran tetap */
+  width:600px; height:347px;
   max-width:90vw; aspect-ratio:600/347;
-  border:2px solid var(--gold);
+  border:3px solid var(--gold);              /* border emas lebih tebal */
   border-radius:18px; overflow:hidden;
-  box-shadow:0 20px 50px rgba(0,0,0,.55), 0 0 0 4px rgba(244,197,66,.18) inset;
-  background:#000;                 /* ❌ tanpa animasi ngembang */
+  box-shadow:0 20px 50px rgba(0,0,0,.55), 0 0 0 5px rgba(244,197,66,.28) inset;
+  background:#000;
 }
 
 .popup-img{
@@ -222,31 +222,31 @@
 /* Tombol X — lebih besar, tetap tanpa background */
 .popup-close{
   position:absolute; top:10px; right:12px;
-  width:44px; height:44px; border:none; background:transparent;
-  color:#fff; font-size:26px; line-height:44px; cursor:pointer;
-  text-shadow:0 2px 10px rgba(0,0,0,.7), 0 0 8px rgba(255,255,255,.35);
+  width:46px; height:46px; border:none; background:transparent;
+  color:#fff; font-size:28px; font-weight:700;   /* ❗ lebih tebal */
+  line-height:46px; cursor:pointer;
+  text-shadow:0 2px 10px rgba(0,0,0,.7), 0 0 8px rgba(255,255,255,.45);
   z-index:2;
 }
-.popup-close:hover{ transform: scale(1.06); }
+.popup-close:hover{ transform: scale(1.08); }
 
 /* Dots tetap di tengah, tidak bergerak */
 .popup-dots{
   position:absolute; left:0; right:0; bottom:14px;
   display:flex; gap:12px; align-items:center; justify-content:center; z-index:2;
-  pointer-events:none;
 }
 .popup-dot{
-  position:relative;
-  width:12px; height:12px; border-radius:999px;
-  background: rgba(255,255,255,.45);
-  box-shadow: 0 0 6px rgba(255,255,255,.35);
+  width:14px; height:14px; border-radius:999px;
+  background: rgba(255,255,255,.4);
+  box-shadow:0 0 6px rgba(255,255,255,.35);
   transition: transform .25s, background .25s, box-shadow .25s;
+  cursor:pointer;                      /* bisa di-klik */
 }
 /* Dot aktif: emas + pulse halus di dalam titik */
 .popup-dot.active{
   background: var(--gold);
-  box-shadow: 0 0 12px rgba(244,197,66,.8), 0 0 22px rgba(244,197,66,.5);
-  transform: scale(1.2);
+  box-shadow: 0 0 14px rgba(244,197,66,.9), 0 0 24px rgba(244,197,66,.6);
+  transform: scale(1.25);
 }
 .popup-dot.active::after{
   content:""; position:absolute; inset:0; border-radius:inherit;
@@ -420,51 +420,61 @@
   PROMO_IMAGES.forEach(src => { const i=new Image(); i.src=src; });
 
   let idx = 0, slideTimer = null;
-  let modal, imgEl, btnClose, dots;
+let modal, imgEl, btnClose, dots;
 
-  function setActiveDot(i){
-    dots.forEach((d,di)=> d.classList.toggle('active', di===i));
-  }
+function setActiveDot(i){
+  dots.forEach((d,di)=> d.classList.toggle('active', di===i));
+}
 
-  function openPromo(){
-    idx = 0;
+function showImage(i){
+  idx = i % PROMO_IMAGES.length;
+  imgEl.classList.add("fadeout");
+  setTimeout(()=>{
     imgEl.src = PROMO_IMAGES[idx];
-    setActiveDot(idx);                       // <- set dot aktif
-    document.body.style.overflow = "hidden";
-    modal.classList.add("open");
-    modal.setAttribute("aria-hidden","false");
+    imgEl.classList.remove("fadeout");
+    setActiveDot(idx);
+  }, 320);
+}
 
-    slideTimer = setInterval(()=>{
-      idx = (idx + 1) % PROMO_IMAGES.length;
-      imgEl.classList.add("fadeout");
-      setTimeout(()=>{
-        imgEl.src = PROMO_IMAGES[idx];
-        imgEl.classList.remove("fadeout");
-        setActiveDot(idx);                   // <- update dot saat ganti gambar
-      }, 320);
-    }, 6000);
-  }
+function openPromo(){
+  idx = 0;
+  imgEl.src = PROMO_IMAGES[idx];
+  setActiveDot(idx);
+  document.body.style.overflow = "hidden";
+  modal.classList.add("open");
 
-  function closePromo(){
-    modal.classList.remove("open");
-    modal.setAttribute("aria-hidden","true");
-    document.body.style.overflow = "";
-    if (slideTimer){ clearInterval(slideTimer); slideTimer = null; }
-  }
+  slideTimer = setInterval(()=>{
+    showImage(idx+1);
+  }, 6000);
+}
 
-  // Pastikan elemen ada dulu
-  window.addEventListener("DOMContentLoaded", () => {
-    modal    = document.getElementById("promoModal");
-    imgEl    = document.getElementById("popupImg");
-    btnClose = document.getElementById("popupClose");
-    dots     = Array.from(document.querySelectorAll(".popup-dot"));
+function closePromo(){
+  modal.classList.remove("open");
+  document.body.style.overflow = "";
+  if (slideTimer){ clearInterval(slideTimer); slideTimer = null; }
+}
 
-    btnClose.addEventListener("click", closePromo);
-    modal.addEventListener("click", (e)=>{ if(e.target === modal) closePromo(); });
-    document.addEventListener("keydown", (e)=>{ if(e.key === "Escape") closePromo(); });
+// ===== INIT =====
+window.addEventListener("DOMContentLoaded", () => {
+  modal    = document.getElementById("promoModal");
+  imgEl    = document.getElementById("popupImg");
+  btnClose = document.getElementById("popupClose");
+  dots     = Array.from(document.querySelectorAll(".popup-dot"));
 
-    openPromo();   // buka otomatis
+  btnClose.addEventListener("click", closePromo);
+  modal.addEventListener("click", (e)=>{ if(e.target === modal) closePromo(); });
+  document.addEventListener("keydown", (e)=>{ if(e.key === "Escape") closePromo(); });
+
+  // klik manual dot
+  dots.forEach((dot,i)=>{
+    dot.addEventListener("click", ()=>{
+      if (slideTimer){ clearInterval(slideTimer); slideTimer=null; } // stop auto
+      showImage(i);
+    });
   });
+
+  openPromo(); // buka otomatis
+});
 </script>
   
   <script>
