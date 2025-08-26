@@ -509,17 +509,25 @@ body { padding-bottom: calc(90px + env(safe-area-inset-bottom)); } /* ruang utk 
 }
 
 /* ===== Slider tipis 955 x 115 ===== */
-.mini-slider{
-  position:relative;
-  max-width:955px;                 /* lebar target */
-  height:115px;                    /* tinggi target di desktop */
-  margin:14px auto 0;
-  border-radius:14px;
-  overflow:hidden;
-  background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
-  border:1px solid rgba(255,255,255,.06);
-  box-shadow:0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.03);
+.mini-slider {
+  position: relative;
+  width: 955px;     /* sesuai request */
+  max-width: 100%;  /* tetap responsif */
+  height: 115px;
+  margin: 18px auto;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000; /* bar hitam kalau aspect ratio beda */
 }
+
+.mini-slider img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;   /* ⚡ biar gambar utuh ga terpotong */
+  background: #000;      /* bar belakang hitam */
+  display: block;
+}
+    
 @media (max-width: 980px){
   /* skala proporsional di mobile */
   .mini-slider{ height:auto; aspect-ratio: 955 / 115; }
