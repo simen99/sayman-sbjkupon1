@@ -263,7 +263,38 @@
 /* kecilkan tombol close di layar kecil */
 @media (max-width:420px){
   .popup-close{ width:38px; height:38px; font-size:22px; line-height:38px; }
-}   
+}
+
+/* selalu di atas semuanya (kadang bubble chat nutup) */
+.modal-backdrop{ z-index: 999999; }
+
+/* bungkus popup: hilangkan height fixed di CSS, biar JS yang set */
+.popup-wrap{
+  position:relative;
+  width:600px;              /* default desktop */
+  /* height:347px;  <-- HAPUS baris fixed height */
+  max-width:92vw;           /* responsif */
+  border:3px solid var(--gold);
+  border-radius:18px; overflow:hidden;
+  box-shadow:0 20px 50px rgba(0,0,0,.55), 0 0 0 5px rgba(244,197,66,.28) inset;
+  background:#000;
+}
+
+/* gambar utuh (tidak ter-crop) di layar kecil */
+.popup-img{
+  width:100%; height:100%;
+  object-fit: contain;      /* <— was cover */
+  background:#000;          /* bar hitam letterbox */
+  display:block;
+  opacity:1; transition:opacity .6s ease;
+}
+
+@media (max-width: 480px){
+  .popup-close{ width:38px; height:38px; font-size:22px; line-height:38px; }
+  .popup-dots{ bottom:10px; gap:10px; }
+  .popup-dot{ width:12px; height:12px; }
+}
+    
   </style>
   
 </head>
@@ -410,6 +441,43 @@
 </div>
 
   <script>
+  // Rasio konten popup (W x H) = 600 x 347
+  const POPUP_W = 600, POPUP_H = 347, POPUP_RATIO = POPUP_H / POPUP_W;
+
+  function sizePopup() {
+    const wrap = document.querySelector('.popup-wrap');
+    if (!wrap) return;
+
+    // batas lebar & tinggi layar
+    const vw = Math.min(window.innerWidth, document.documentElement.clientWidth || window.innerWidth);
+    const vh = Math.min(window.innerHeight, document.documentElement.clientHeight || window.innerHeight);
+
+    // target maksimal: 92% lebar layar, 80% tinggi layar
+    let maxW = Math.min(POPUP_W, vw * 0.92);
+    let maxH = Math.min(POPUP_H, vh * 0.80);
+
+    // hitung ukuran dengan menjaga rasio
+    let w = maxW;
+    let h = w * POPUP_RATIO;
+    if (h > maxH) {            // kalau ketinggian kebanyakan, scale by height
+      h = maxH;
+      w = h / POPUP_RATIO;
+    }
+
+    wrap.style.width  = Math.round(w) + 'px';
+    wrap.style.height = Math.round(h) + 'px';
+  }
+
+  // panggil saat DOM siap, saat buka popup, dan saat resize
+  document.addEventListener('DOMContentLoaded', sizePopup);
+  window.addEventListener('resize', sizePopup);
+
+  // kalau kamu punya fungsi openPromo, panggil juga di sana:
+  // setelah modal.classList.add('open');
+  // sizePopup();
+</script>
+
+  <script>
   // ====== Popup Promo ======
   const PROMO_IMAGES = [
     "https://raw.githubusercontent.com/simen99/Kode-luckyspin-slotbangjago1/refs/heads/main/luckyspin%20sbj.jfif",
@@ -443,9 +511,9 @@ function openPromo(){
   document.body.style.overflow = "hidden";
   modal.classList.add("open");
 
-  slideTimer = setInterval(()=>{
-    showImage(idx+1);
-  }, 6000);
+  sizePopup();   // <<< penting untuk set ukuran awal di mobile
+
+  slideTimer = setInterval(()=>{ showImage(idx+1); }, 6000);
 }
 
 function closePromo(){
