@@ -460,68 +460,54 @@ body { padding-bottom: calc(90px + env(safe-area-inset-bottom)); } /* ruang utk 
   transform: scale(1.12);
 }
 
-    /* ===== Animated Loading Card ===== */
+/* ===== Loading Skeleton — clean + classy ===== */
 .skeleton{
   position: relative;
-  border-radius: 14px;
-  background: #12121a;
-  border:1px solid rgba(255,255,255,.06);
   height: 120px;
-  overflow: hidden;
   margin-top:12px;
-  box-shadow: 0 10px 40px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.03);
+  border-radius:14px;
+  background: #12121a;                      /* panel gelap solid */
+  border:1px solid rgba(255,255,255,.06);
+  overflow:hidden;
+  box-shadow: 0 12px 36px rgba(0,0,0,.4),    /* drop shadow lembut */
+              inset 0 1px 0 rgba(255,255,255,.04),
+              inset 0 0 0 1px rgba(255,255,255,.03); /* ring tipis */
 }
 
-/* “lampu” yang melintas */
+/* “aurora shimmer” elegan — tanpa bayangan putih pekat */
 .skeleton::before{
   content:"";
-  position:absolute; inset:0;
-  background: linear-gradient(100deg,
-    rgba(255,255,255,0) 0%,
-    rgba(255,255,255,.06) 40%,
-    rgba(255,255,255,0) 80%);
-  transform: translateX(-100%);
-  animation: sk-shimmer 1.4s ease-in-out infinite;
+  position:absolute; inset:-20% -60%;        /* lebih besar biar halus */
+  background:
+    radial-gradient(60% 40% at 20% 30%, rgba(255,255,255,.05), transparent 60%),
+    radial-gradient(50% 30% at 80% 70%, rgba(255,255,255,.04), transparent 60%),
+    linear-gradient(100deg, transparent 0%, rgba(255,255,255,.06) 50%, transparent 100%);
+  transform: translateX(-40%);
+  filter: blur(6px);
+  animation: sk-aurora 1.6s ease-in-out infinite;
 }
-@keyframes sk-shimmer{
-  100%{ transform: translateX(100%); }
+@keyframes sk-aurora{
+  0%   { transform: translateX(-40%) }
+  100% { transform: translateX(40%) }
 }
 
-/* Bar-bar dummy seperti teks */
+/* Bar placeholder (teks palsu) — kontras pas */
 .sk-bar{
   height: 12px;
   border-radius: 8px;
-  background: rgba(255,255,255,.07);
+  background: rgba(255,255,255,.06);
   margin: 10px 14px;
-  animation: sk-pulse 1.6s ease-in-out infinite;
+  animation: sk-pulse 1.8s ease-in-out infinite;
 }
-.sk-bar:nth-child(1){ width: 48%; margin-top:18px; }
-.sk-bar:nth-child(2){ width: 75%; animation-delay:.1s; }
-.sk-bar:nth-child(3){ width: 62%; animation-delay:.2s; }
+.sk-bar:nth-child(1){ width:48%;  margin-top:18px; }
+.sk-bar:nth-child(2){ width:76%;  animation-delay:.1s; }
+.sk-bar:nth-child(3){ width:62%;  animation-delay:.2s; }
+
 @keyframes sk-pulse{
   0%,100%{ opacity:.55 }
-  50%   { opacity:1 }
+  50%   { opacity:.95 }
 }
-
-/* Titik “menari” di tengah */
-.sk-dots{
-  position:absolute; left:50%; top:50%;
-  transform: translate(-50%,-50%);
-  display:flex; gap:8px; pointer-events:none;
-}
-.sk-dots span{
-  width:10px; height:10px; border-radius:50%;
-  background: linear-gradient(180deg, var(--gold), var(--gold2));
-  box-shadow: 0 0 12px rgba(244,197,66,.45);
-  animation: sk-bounce .8s infinite ease-in-out;
-}
-.sk-dots span:nth-child(2){ animation-delay:.1s }
-.sk-dots span:nth-child(3){ animation-delay:.2s }
-@keyframes sk-bounce{
-  0%,100%{ transform: translateY(0); opacity:.85 }
-  50%    { transform: translateY(-6px); opacity:1 }
-}
-
+    
   </style>
   
 </head>
@@ -576,7 +562,6 @@ body { padding-bottom: calc(90px + env(safe-area-inset-bottom)); } /* ruang utk 
       <div class="sk-bar"></div>
       <div class="sk-bar"></div>
       <div class="sk-bar"></div>
-      <div class="sk-dots"><span></span><span></span><span></span></div>
     `;
   }else{
     box.style.display = "none";
