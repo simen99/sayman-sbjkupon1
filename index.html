@@ -193,93 +193,91 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwCXASjddyikXRJnwpfYdXlt0CQu6aBHMzWI0tjlSJneCw2BbbBNpy_ojQhPlxZPHP7aw/exec";
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwCXASjddyikXRJnwpfYdXlt0CQu6aBHMzWI0tjlSJneCw2BbbBNpy_ojQhPlxZPHP7aw/exec";
 
-    const $ = (s,ctx=document)=>ctx.querySelector(s);
-    const el = (tag, cls)=>{const n=document.createElement(tag); if(cls) n.className=cls; return n;};
-    const fmtDate = (s)=>{const d=new Date(s); if(String(d)==="Invalid Date") return s||"-";
-      return d.toLocaleString("id-ID",{day:"2-digit",month:"long",year:"numeric"});};
-    const toast=(msg,ok=true)=>{const box=$("#toast");const t=el("div","toast-item");
-      t.innerHTML=ok?`✅ ${msg}`:`❌ ${msg}`;box.appendChild(t);
-      setTimeout(()=>{t.style.opacity="0";setTimeout(()=>t.remove(),300);},2500);};
+  const $ = (s,ctx=document)=>ctx.querySelector(s);
+  const el = (tag, cls)=>{const n=document.createElement(tag); if(cls) n.className=cls; return n;};
+  const fmtDate = (s)=>{const d=new Date(s); if(String(d)==="Invalid Date") return s||"-";
+    return d.toLocaleString("id-ID",{day:"2-digit",month:"long",year:"numeric"});};
+  const toast=(msg,ok=true)=>{const box=$("#toast");const t=el("div","toast-item");
+    t.innerHTML=ok?`✅ ${msg}`:`❌ ${msg}`;box.appendChild(t);
+    setTimeout(()=>{t.style.opacity="0";setTimeout(()=>t.remove(),300);},2500);};
 
-    $("#y").textContent=new Date().getFullYear();
-    $("#q").addEventListener("keydown",(e)=>{if(e.key==="Enter") search();});
-    $("#go").addEventListener("click",()=>search());
+  $("#y").textContent=new Date().getFullYear();
+  $("#q").addEventListener("keydown",(e)=>{if(e.key==="Enter") search();});
+  $("#go").addEventListener("click",()=>search());
 
-    function setLoading(v){
-      $("#loading").style.display=v?"block":"none";
-      const btn=$("#go");
-      btn.disabled=v;
-      btn.innerHTML=v?`<span class="spinner"></span><span>Memproses...</span><span class="dot"></span>`:`<span class="label">🔎 Cari</span><span class="dot"></span>`;
-    }
-
-    async function search(){
-      const q=$("#q").value.trim();
-      $("#result").innerHTML="";
-      if(!q){toast("Isi User ID dulu ya",false);return;}
-      if(!WEB_APP_URL.includes("http")){toast("WEB_APP_URL belum diisi",false);return;}
-      setLoading(true);
-      try{
-        const res=await fetch(WEB_APP_URL+"?searchtext="+encodeURIComponent(q));
-        const data=await res.json();
-        renderResult(q,Array.isArray(data)?data:[]);
-      }catch(e){toast("Gagal konek server",false);}
-      finally{setLoading(false);}
-    }
-
-    function escapeHTML(s){
-  return String(s).replace(/[&<>"']/g, m => ({
-    "&":"&amp;",
-    "<":"&lt;",
-    ">":"&gt;",
-    '"':"&quot;",
-    "'":"&#039;"
-  }[m]));
-}
-
-    function renderResult(q,rows){
-  const resultBox=$("#result");
-  if(!rows.length){
-    const card=el("div","card");
-    card.innerHTML=`<div class="status err">Tidak ditemukan: <b>${q}</b></div>`;
-    resultBox.appendChild(card);
-    return;
+  function setLoading(v){
+    $("#loading").style.display=v?"block":"none";
+    const btn=$("#go");
+    btn.disabled=v;
+    btn.innerHTML=v?`<span class="spinner"></span><span>Memproses...</span><span class="dot"></span>`:`<span class="label">🔎 Cari</span><span class="dot"></span>`;
   }
 
-  // 🎊 confetti
-  confetti({particleCount:90,spread:60,origin:{y:0.3}});
-
-  // Tabel hasil
-  const tableWrap=el("div","card");
-  const table=el("table","table");
-  table.innerHTML=`<thead><tr>
-      <th>User ID</th><th>Kode</th><th>Tanggal</th>
-    </tr></thead>
-    <tbody>${
-      rows.map(r=>`
-  <tr>
-    <td>${escapeHTML(r[0])}</td>
-    <td>
-      <span style="font-weight:700">${escapeHTML(r[1])}</span>
-      <button class="copy-btn" data-copy="${escapeHTML(r[1])}">Copy</button>
-    </td>
-    <td>${escapeHTML(fmtDate(r[2]))}</td>
-  </tr>`).join("")
-    }</tbody>`;
-  tableWrap.appendChild(table);
-  resultBox.appendChild(tableWrap);
-
-  // Event copy
- resultBox.addEventListener("click",(e)=>{
-  if(e.target.matches(".copy-btn")){
-    const txt=e.target.dataset.copy;
-    navigator.clipboard.writeText(txt)
-      .then(()=>toast("Kode disalin"))
-      .catch(()=>toast("Gagal copy",false));
+  async function search(){
+    const q=$("#q").value.trim();
+    $("#result").innerHTML="";
+    if(!q){toast("Isi User ID dulu ya",false);return;}
+    if(!WEB_APP_URL.includes("http")){toast("WEB_APP_URL belum diisi",false);return;}
+    setLoading(true);
+    try{
+      const res=await fetch(WEB_APP_URL+"?searchtext="+encodeURIComponent(q));
+      const data=await res.json();
+      renderResult(q,Array.isArray(data)?data:[]);
+    }catch(e){toast("Gagal konek server",false);}
+    finally{setLoading(false);}
   }
-}, { once:true });
-      
-  </script>
+
+  function escapeHTML(s){
+    return String(s).replace(/[&<>"']/g, m => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+    }[m]));
+  }
+
+  function renderResult(q,rows){
+    const resultBox=$("#result");
+    if(!rows.length){
+      const card=el("div","card");
+      card.innerHTML=`<div class="status err">Tidak ditemukan: <b>${escapeHTML(q)}</b></div>`;
+      resultBox.appendChild(card);
+      return;
+    }
+
+    // 🎊 confetti
+    confetti({particleCount:90,spread:60,origin:{y:0.3}});
+
+    // Tabel hasil
+    const tableWrap=el("div","card");
+    const table=el("table","table");
+    table.innerHTML=`<thead><tr>
+        <th>User ID</th><th>Kode</th><th>Tanggal</th>
+      </tr></thead>
+      <tbody>${
+        rows.map(r=>`
+          <tr>
+            <td>${escapeHTML(r[0])}</td>
+            <td>
+              <span style="font-weight:700">${escapeHTML(r[1])}</span>
+              <button class="copy-btn" type="button" data-copy="${escapeHTML(r[1])}">Copy</button>
+            </td>
+            <td>${escapeHTML(fmtDate(r[2]))}</td>
+          </tr>`).join("")
+      }</tbody>`;
+    tableWrap.appendChild(table);
+    resultBox.appendChild(tableWrap);
+
+    // Event copy (dipasang sekali per render)
+    resultBox.addEventListener("click",(e)=>{
+      const btn = e.target.closest(".copy-btn");
+      if(btn){
+        const txt=btn.dataset.copy||"";
+        navigator.clipboard.writeText(txt)
+          .then(()=>toast("Kode disalin"))
+          .catch(()=>toast("Gagal copy",false));
+      }
+    }, { once:true });
+  }
+</script>
+
 </body>
 </html>
