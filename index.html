@@ -459,58 +459,69 @@ body { padding-bottom: calc(90px + env(safe-area-inset-bottom)); } /* ruang utk 
     }[m]));
   }
 
-  function renderResult(q,rows){
-    const resultBox=$("#result");
-    if(!rows.length){
-  const card=el("div","card");
-  card.innerHTML = `
-    <div style="margin-top:4px; font-size:14px; color:var(--muted); text-align:center;">
-      Pastikan User ID anda sudah benar.<br>
-      Jika masih bermasalah, hubungi bantuan melalui tombol berikut:
-    </div>
-    <div style="margin-top:12px; text-align:center;">
-      <a href="https://klikblg.com/wa-sbj" target="_blank" class="wa-btn">💬 WA Official Slotbangjago</a>
-    </div>
-  `;
-  resultBox.appendChild(card);
-  return;
+  function renderResult(rows){
+  const resultBox=$("#result");
+  resultBox.innerHTML=""; // reset dulu
+
+  if(!rows.length){
+    const card=el("div","card");
+    card.innerHTML = `
+      <div style="margin-top:4px;font-size:14px;color:var(--muted);text-align:center;">
+        Pastikan User ID anda sudah benar.<br>
+        Jika masih bermasalah, hubungi bantuan melalui tombol berikut:
+      </div>
+      <div style="margin-top:12px;text-align:center;">
+        <a href="https://klikblg.com/wa-sbj" target="_blank" rel="noopener" 
+           class="copy-btn" style="background:linear-gradient(180deg,#25d366,#128c7e);color:#fff">
+          💬 WA Official Slotbangjago
+        </a>
+      </div>`;
+    resultBox.appendChild(card);
+    return;
+  }
+
+  confetti({particleCount:70, spread:60, origin:{y:0.3}});
+
+  const tableWrap=el("div","card");
+  const table=el("table","table");
+  table.innerHTML=`
+    <thead><tr>
+      <th>USER ID</th><th>KODE LUCKYSPIN</th><th>TANGGAL</th>
+    </tr></thead>
+    <tbody>${
+      rows.map(r=>`
+        <tr>
+          <td data-label="User ID">${escapeHTML(r[0])}</td>
+          <td data-label="Kode">
+            <span class="code-val">${escapeHTML(r[1])}</span>
+            <button class="copy-btn" type="button" data-copy="${escapeHTML(r[1])}">Copy</button>
+          </td>
+          <td data-label="Tanggal">${escapeHTML(fmtDate(r[2]))}</td>
+        </tr>`).join("")
+    }</tbody>`;
+  tableWrap.appendChild(table);
+  resultBox.appendChild(tableWrap);
 }
 
-    // 🎊 confetti
-    confetti({particleCount:90,spread:60,origin:{y:0.3}});
-
-    // Tabel hasil
-    const tableWrap=el("div","card");
-    const table=el("table","table");
-    table.innerHTML=`<thead><tr>
-        <th>USER ID</th><th>KODE LUCKYSPIN</th><th>TANGGAL</th>
-      </tr></thead>
-      <tbody>${
-        rows.map(r=>`
-  <tr>
-    <td data-label="User ID">${escapeHTML(r[0])}</td>
-    <td data-label="Kode">
-      <span class="code-val">${escapeHTML(r[1])}</span>
-      <button class="copy-btn" type="button" data-copy="${escapeHTML(r[1])}">Copy</button>
-    </td>
-    <td data-label="Tanggal">${escapeHTML(fmtDate(r[2]))}</td>
-  </tr>`
-).join("")
-      }</tbody>`;
-    tableWrap.appendChild(table);
-    resultBox.appendChild(tableWrap);
-
-    // Event copy (dipasang sekali per render)
-    resultBox.addEventListener("click",(e)=>{
-      const btn = e.target.closest(".copy-btn");
-      if(btn){
-        const txt=btn.dataset.copy||"";
-        navigator.clipboard.writeText(txt)
-          .then(()=>toast("Kode disalin"))
-          .catch(()=>toast("Gagal copy",false));
-      }
-    }, { once:true });
+// ✅ listener copy global, bukan sekali pakai
+document.addEventListener("click", (e)=>{
+  const btn = e.target.closest(".copy-btn");
+  if(btn && btn.dataset.copy){
+    const txt = btn.dataset.copy;
+    navigator.clipboard.writeText(txt).then(()=>{
+      toast("Kode disalin");
+      // animasi kecil
+      btn.style.transform="scale(1.15)";
+      btn.style.background="linear-gradient(180deg,#21d07a,#17a562)";
+      setTimeout(()=>{
+        btn.style.transform="scale(1)";
+        btn.style.background="";
+      },300);
+    }).catch(()=>{
+      toast("Gagal copy",false);
+    });
   }
+});
 </script>
 
    <!-- Popup Promo -->
