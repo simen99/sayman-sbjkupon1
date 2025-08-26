@@ -507,6 +507,56 @@ body { padding-bottom: calc(90px + env(safe-area-inset-bottom)); } /* ruang utk 
   0%,100%{ opacity:.55 }
   50%   { opacity:.95 }
 }
+
+/* ===== Slider tipis 955 x 115 ===== */
+.mini-slider{
+  position:relative;
+  max-width:955px;                 /* lebar target */
+  height:115px;                    /* tinggi target di desktop */
+  margin:14px auto 0;
+  border-radius:14px;
+  overflow:hidden;
+  background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+  border:1px solid rgba(255,255,255,.06);
+  box-shadow:0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.03);
+}
+@media (max-width: 980px){
+  /* skala proporsional di mobile */
+  .mini-slider{ height:auto; aspect-ratio: 955 / 115; }
+}
+
+.ms-track{
+  width:100%; height:100%;
+  display:flex; transition:transform .45s ease;
+  will-change: transform;
+}
+
+.ms-slide{
+  flex:0 0 100%; width:100%; height:100%;
+}
+.ms-slide a, .ms-slide img{
+  display:block; width:100%; height:100%;
+}
+.ms-slide img{ object-fit:cover; }
+
+/* dots */
+.ms-dots{
+  position:absolute; left:0; right:0; bottom:8px;
+  display:flex; gap:8px; justify-content:center; align-items:center;
+  pointer-events:auto;
+}
+.ms-dot{
+  width:10px; height:10px; border-radius:999px;
+  background:rgba(255,255,255,.45);
+  border:1px solid rgba(0,0,0,.25);
+  box-shadow:0 0 6px rgba(255,255,255,.25);
+  cursor:pointer; transition:transform .2s, background .2s;
+}
+.ms-dot.active{
+  background:var(--gold);
+  transform:scale(1.25);
+  box-shadow:0 0 12px rgba(244,197,66,.8);
+}
     
   </style>
   
@@ -525,6 +575,13 @@ body { padding-bottom: calc(90px + env(safe-area-inset-bottom)); } /* ruang utk 
       </div>
       <div class="hint">Tekan <b>Enter</b> atau klik <b>Cari</b>.</div>
     </div>
+
+    <!-- SLIDER TIPIS -->
+<div class="mini-slider" id="miniSlider" aria-label="Promo Slider">
+  <div class="ms-track" id="msTrack"></div>
+  <!-- dot navigasi -->
+  <div class="ms-dots" id="msDots"></div>
+</div>
 
     <div id="loading" class="skeleton" style="display:none;"></div>
     <div id="result" class="section"></div>
@@ -803,6 +860,74 @@ window.addEventListener("DOMContentLoaded", () => {
 
   openPromo(); // buka otomatis
 });
+</script>
+
+  <script>
+/* gambar slider */
+const MINI_SLIDES = [
+  "https://raw.githubusercontent.com/simen99/Kode-luckyspin-slotbangjago1/refs/heads/main/slider%20luckyspin.png",
+  "https://raw.githubusercontent.com/simen99/Kode-luckyspin-slotbangjago1/refs/heads/main/slider%20new%20member.png",
+  "https://raw.githubusercontent.com/simen99/Kode-luckyspin-slotbangjago1/refs/heads/main/slider%20jejer.jpg"
+];
+
+(function initMiniSlider(){
+  const track = document.getElementById('msTrack');
+  const dotsBox = document.getElementById('msDots');
+  if(!track || !dotsBox) return;
+
+  // build slides + dots
+  MINI_SLIDES.forEach((src, i)=>{
+    const slide = document.createElement('div');
+    slide.className = 'ms-slide';
+    slide.innerHTML = `<a href="#" onclick="return false"><img src="${src}" alt="Promo ${i+1}"></a>`;
+    track.appendChild(slide);
+
+    const dot = document.createElement('span');
+    dot.className = 'ms-dot';
+    dotsBox.appendChild(dot);
+  });
+
+  const dots = Array.from(dotsBox.children);
+  let idx = 0, timer = null;
+
+  function goTo(i){
+    idx = (i + MINI_SLIDES.length) % MINI_SLIDES.length;
+    track.style.transform = `translateX(${-idx*100}%)`;
+    dots.forEach((d,di)=> d.classList.toggle('active', di===idx));
+  }
+  function next(){ goTo(idx+1); }
+  function play(){ stop(); timer = setInterval(next, 6000); }
+  function stop(){ if(timer){ clearInterval(timer); timer=null; } }
+
+  dots.forEach((d,di)=> d.addEventListener('click', ()=>{ goTo(di); play(); }));
+
+  // pause saat hover (desktop)
+  const slider = document.getElementById('miniSlider');
+  slider.addEventListener('mouseenter', stop);
+  slider.addEventListener('mouseleave', play);
+
+  // basic swipe (mobile)
+  let startX=0, deltaX=0, dragging=false;
+  slider.addEventListener('touchstart', (e)=>{ startX=e.touches[0].clientX; deltaX=0; dragging=true; stop(); }, {passive:true});
+  slider.addEventListener('touchmove', (e)=>{
+    if(!dragging) return;
+    deltaX = e.touches[0].clientX - startX;
+    track.style.transition='none';
+    track.style.transform = `translateX(${(-idx*100) + (deltaX/slider.offsetWidth)*100}%)`;
+  }, {passive:true});
+  function endSwipe(){
+    if(!dragging) return;
+    track.style.transition='';
+    if(Math.abs(deltaX) > slider.offsetWidth*0.18){ deltaX<0 ? next() : goTo(idx-1); }
+    else { goTo(idx); }
+    dragging=false; play();
+  }
+  slider.addEventListener('touchend', endSwipe);
+  slider.addEventListener('touchcancel', endSwipe);
+
+  // start
+  goTo(0); play();
+})();
 </script>
   
   <script>
