@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>SlotBangJago - Cari Kupon</title>
+  <title>SlotBangJago - Cari Kupon Luckyspin</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
@@ -97,36 +97,49 @@
     .kv{background:#0e0e15; border:1px solid rgba(255,255,255,.06); border-radius:12px; padding:12px; min-height:64px; position:relative;}
     .kv label{display:block; font-size:12px; color:var(--muted); margin-bottom:6px}
     .kv .val{font-weight:700; letter-spacing:.2px}
-    .copy-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 14px;
-  font-weight: 700;
-  background: linear-gradient(180deg, var(--gold), var(--gold2));
-  color: #1a1a1a;
-  border: none;
-  border-radius: 999px;
-  padding: 8px 16px;
-  cursor: pointer;
-  box-shadow: 0 6px 18px rgba(244, 197, 66, 0.35);
-  transition: all .2s ease-in-out;
+    .copy-btn{
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:14px; font-weight:700;
+  background:linear-gradient(180deg, var(--gold), var(--gold2));
+  color:#1a1a1a; border:0; border-radius:999px;
+  padding:8px 16px; cursor:pointer;
+  /* hilangkan glow tebal: */
+  box-shadow: 0 1px 0 rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.25);
+  transition: transform .12s ease, filter .15s ease;
 }
-.copy-btn:hover {
-  filter: brightness(1.08);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 22px rgba(244, 197, 66, 0.55);
+.copy-btn:hover{ filter:brightness(1.04); transform:translateY(-1px); }
+.copy-btn:active{ transform:translateY(0) scale(.98); }
+.copy-btn::before{ content:"📋"; font-size:14px; }
+    
+    /* tabel dasar */
+.table{
+  width:100%; border-collapse:separate; border-spacing:0;
+  margin-top:12px; font-size:15px;
+  border:1px solid rgba(255,255,255,.10);   /* frame luar */
+  border-radius:10px; overflow:hidden;
 }
-.copy-btn:active {
-  transform: scale(0.96);
+
+/* header */
+.table thead th{
+  background:#15151f; color:#f4c542; font-weight:700; padding:12px; text-align:left;
+  border-bottom:1px solid rgba(255,255,255,.14);
+  /* garis vertikal header */
+  border-right:1px solid rgba(255,255,255,.08);
 }
-.copy-btn::before {
-  content: "📋";
-  font-size: 14px;
+.table thead th:last-child{ border-right:none; }
+
+/* body */
+.table tbody td{
+  padding:12px;
+  border-bottom:1px solid rgba(255,255,255,.08);  /* garis horizontal */
+  border-right:1px solid rgba(255,255,255,.06);   /* garis vertikal */
 }
-    .table{width:100%; border-collapse:collapse; margin-top:12px; font-size:14px; border-radius:12px; border:1px solid rgba(255,255,255,.08);}
-    .table thead th{background:#15151f; color:#dcdcf0; font-weight:700; padding:12px;}
-    .table tbody td{padding:12px; border-top:1px solid rgba(255,255,255,.06);}
+.table tbody tr:last-child td{ border-bottom:none; }
+.table tbody td:last-child{ border-right:none; }
+
+/* efek hover lembut */
+.table tbody tr:hover{ background:rgba(255,255,255,.03); }
+
     .status{display:inline-flex; align-items:center; gap:6px; font-size:12px; padding:6px 10px; border-radius:999px;
       border:1px solid rgba(33,208,122,.4); color:#bff7da; background:rgba(33,208,122,.1);}
     .status.err{border-color:rgba(255,92,122,.5); color:#ffd0da; background:rgba(255,92,122,.1)}
@@ -136,16 +149,6 @@
     footer{margin-top:36px; color:var(--muted); font-size:12px; text-align:center}
     @media (max-width: 720px){.grid{grid-template-columns:1fr} .btn{min-width:120px}}
     
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 12px;
-  font-size: 15px;
-  border: 1px solid rgba(255,255,255,.08);
-  border-radius: 10px;
-  overflow: hidden;
-}
-
 .table thead th {
   background: #15151f;
   color: #f4c542;
@@ -186,7 +189,7 @@
 
     <div id="loading" class="skeleton" style="display:none;"></div>
     <div id="result" class="section"></div>
-    <footer>© <span id="y"></span> 2015 - 2025 Copyright SLOTBANGJAGO. All Rights Reserved.</footer>
+    <footer>© 2015 - <span id="y"></span> Copyright SLOTBANGJAGO. All Rights Reserved.</footer>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
