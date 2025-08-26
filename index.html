@@ -501,6 +501,18 @@ function renderResult(q, rows){
     }</tbody>`;
   tableWrap.appendChild(table);
   resultBox.appendChild(tableWrap);
+
+  // 👉 Tambah tombol PUTAR KUPON di bawah hasil
+  const playBtn = document.createElement("a");
+  playBtn.href = "https://maxwinputar.com/lucky-wheel-slotbangjago/";
+  playBtn.target = "_blank";
+  playBtn.className = "btn";
+  playBtn.style.display = "block";
+  playBtn.style.margin = "18px auto 0";
+  playBtn.style.textAlign = "center";
+  playBtn.style.maxWidth = "280px";
+  playBtn.innerText = "🎰 PUTAR KUPON DISINI";
+  resultBox.appendChild(playBtn);
 }
     
 
