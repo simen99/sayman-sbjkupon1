@@ -467,11 +467,13 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // klik manual dot
   dots.forEach((dot,i)=>{
-    dot.addEventListener("click", ()=>{
-      if (slideTimer){ clearInterval(slideTimer); slideTimer=null; } // stop auto
-      showImage(i);
-    });
+  dot.addEventListener("click", ()=>{
+    if (slideTimer){ clearInterval(slideTimer); slideTimer=null; }
+    showImage(i);
+    // restart auto setelah 6 detik
+    slideTimer = setInterval(()=>{ showImage(idx+1); }, 6000);
   });
+});
 
   openPromo(); // buka otomatis
 });
