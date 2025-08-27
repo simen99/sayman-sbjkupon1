@@ -769,6 +769,24 @@ body { padding-bottom: calc(90px + env(safe-area-inset-bottom)); } /* ruang utk 
   .section .card::before,
   .table tbody tr::before{ animation: none; }
 }
+
+    /* pesan di atas hasil */
+.result-msg{
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  text-align:center; font-weight:800;
+  color:var(--gold);
+  margin:12px 0 16px;
+  text-shadow:0 0 10px rgba(244,197,66,.45);
+  letter-spacing:.2px;
+}
+.result-msg .star{
+  font-size:18px;
+  animation: twinkle 1.6s ease-in-out infinite;
+}
+@keyframes twinkle{
+  0%,100%{ opacity:.5; transform:scale(.95); }
+  50%{ opacity:1; transform:scale(1); }
+}
     
   </style>
   
@@ -908,6 +926,11 @@ function renderResult(q, rows){
 
   // ada data → confetti + tabel
   confetti({ particleCount:70, spread:60, origin:{ y:0.3 } });
+
+  // 👉 pesan emas di atas hasil
+const msg = el("div","result-msg");
+msg.innerHTML = `<span class="star">✨</span> Gunakan kuponmu sebelum kedaluwarsa, bosku! <span class="star">✨</span>`;
+resultBox.appendChild(msg);
 
   const tableWrap = el("div","card");
   const table = el("table","table");
