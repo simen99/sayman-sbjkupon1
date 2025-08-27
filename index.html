@@ -808,57 +808,13 @@ body { padding-bottom: calc(90px + env(safe-area-inset-bottom)); } /* ruang utk 
     margin:0 1px;         /* rapatkan lagi */
   }
 }
-
-    /* ——— FRAME EMAS KELAP-KELIP (shared) ——— */
-.gold-frame{
-  position: relative;
-  border:2px solid rgba(214,164,0,.95);
-  background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
-  box-shadow:none;                   /* buang glow */
-}
-
-/* versi “pill” untuk header */
-.gold-pill{
-  display:inline-block;
-  padding:10px 18px;
-  border-radius:999px;               /* bentuk kapsul */
-}
-
-/* lampu berjalan di pinggir */
-.gold-frame::after{
-  content:"";
-  position:absolute; inset:-2px;
-  border-radius:inherit;
-  pointer-events:none;
-
-  /* dua “lampu” kiri–kanan yang melintas */
-  background:
-    radial-gradient(18px 60% at 0% 50%  , rgba(244,197,66,0), rgba(244,197,66,.85) 60%, rgba(244,197,66,0) 70%) ,
-    radial-gradient(18px 60% at 100% 50%, rgba(244,197,66,0), rgba(244,197,66,.85) 60%, rgba(244,197,66,0) 70%);
-  background-repeat:no-repeat;
-  background-size: 20% 100%, 20% 100%;
-  animation: goldSweep 2.6s linear infinite;
-}
-
-@keyframes goldSweep{
-  0%   { background-position:-22% 0, 122% 0; }
-  50%  { background-position: 50% 0, 50% 0; }
-  100% { background-position:122% 0,-22% 0; }
-}
-
-/* opsi: kecilkan di HP biar proporsional */
-@media (max-width:560px){
-  .gold-pill{ padding:8px 14px; }
-}
     
   </style>
   
 </head>
 <body>
   <div class="wrap">
-    <div class="hero"><span class="badge gold-frame gold-pill">
-      SlotBangJago - Cari Kupon Luckyspin
-      </span>
+    <div class="hero"><span class="badge">SlotBangJago - Cari Kupon Lucksypin</span></div>
     <h1 class="title">Cari Kupon & Validasi User ID</h1>
     <p class="subtitle">Masukkan <b>USER ID</b> aktif kamu. Jika cocok, sistem akan menampilkan semua kupon luckyspin kamu.✨</p>
 
