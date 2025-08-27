@@ -620,6 +620,54 @@ body { padding-bottom: calc(90px + env(safe-area-inset-bottom)); } /* ruang utk 
 .table tbody td .code-val{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-weight:800; }
 .table tbody td:nth-child(1){ font-weight:800; }
 .table tbody td:nth-child(3){ font-weight:800; letter-spacing:.3px; }
+
+    /* ==== Wrapper Slider dengan Lampu Kelap-Kelip ==== */
+.slider-section{
+  margin: 24px 0;
+  text-align: center;
+}
+
+.slider-title{
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: .5px;
+  margin-bottom: 12px;
+  color: var(--gold);
+  text-shadow: 0 0 12px rgba(244,197,66,.6), 0 0 24px rgba(244,197,66,.4);
+}
+
+.slider-box{
+  position: relative;
+  padding: 6px;
+  border-radius: 16px;
+  background: #111; /* background dasar hitam */
+  overflow: hidden;
+}
+
+/* Efek border lampu kelap-kelip */
+.slider-box::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  padding:3px;
+  background: linear-gradient(90deg,
+    #f4c542, #fff, #d6a400, #f4c542, #fff, #d6a400);
+  background-size: 400% 400%;
+  animation: neonRun 4s linear infinite;
+  -webkit-mask: 
+    linear-gradient(#000 0 0) content-box, 
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+}
+
+/* animasi gradien berjalan */
+@keyframes neonRun{
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
     
   </style>
   
@@ -639,13 +687,17 @@ body { padding-bottom: calc(90px + env(safe-area-inset-bottom)); } /* ruang utk 
       <div class="hint">Tekan <b>Enter</b> atau klik <b>Cari</b>.</div>
     </div>
 
-    <!-- SLIDER TIPIS -->
-<div class="mini-slider" id="miniSlider" aria-label="Promo Slider">
-  <div class="ms-track" id="msTrack"></div>
-  <!-- dot navigasi -->
-  <div class="ms-dots" id="msDots"></div>
+ <!-- SLIDER + TITLE + BOX -->
+<div class="slider-section">
+  <div class="slider-title">BONUS MENARIK KHUSUS MEMBER SETIA</div>
+  <div class="slider-box">
+    <div class="mini-slider" id="miniSlider" aria-label="Promo Slider">
+      <div class="ms-track" id="msTrack"></div>
+      <div class="ms-dots" id="msDots"></div>
+    </div>
+  </div>
 </div>
-
+    
     <div id="loading" class="skeleton" style="display:none;"></div>
     <div id="result" class="section"></div>
     <footer>© 2015 - <span id="y"></span> Copyright SLOTBANGJAGO. All Rights Reserved.</footer>
