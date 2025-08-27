@@ -794,6 +794,20 @@ body { padding-bottom: calc(90px + env(safe-area-inset-bottom)); } /* ruang utk 
   0%,100%{ opacity:.5; transform:scale(.95); }
   50%{ opacity:1; transform:scale(1); }
 }
+
+/* 🔧 Versi mobile (max 480px) */
+@media (max-width:480px){
+  .result-msg{
+    gap:2px;              /* makin rapat di layar kecil */
+    font-size:14px;       /* perkecil font agar proporsional */
+    line-height:1.3;
+  }
+  
+  .result-msg .star{
+    font-size:15px;       /* kecilkan ikon bintang */
+    margin:0 1px;         /* rapatkan lagi */
+  }
+}
     
   </style>
   
