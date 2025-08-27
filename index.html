@@ -708,6 +708,67 @@ body { padding-bottom: calc(90px + env(safe-area-inset-bottom)); } /* ruang utk 
     display: block;
   }
 }
+
+    /* --- animasi glow (kalau belum ada) --- */
+@keyframes neonRun{
+  0%   { background-position:   0% 50%; }
+  100% { background-position: 400% 50%; }
+}
+
+/* ==== GLOW untuk box hasil (kotak luar) ==== */
+.section .card{
+  position: relative;
+  overflow: hidden;          /* supaya glow rapi */
+  border-radius: 18px;       /* pastikan sama dengan card */
+}
+.section .card::before{
+  content:"";
+  position:absolute; inset:0;
+  border-radius: inherit;
+  padding: 2px;              /* tebal garis emas */
+  background: linear-gradient(90deg,
+    #f4c542, #ffffff, #d6a400, #f4c542, #ffffff, #d6a400);
+  background-size: 400% 400%;
+  animation: neonRun 4s linear infinite;
+  /* trik masker agar hanya border yang terlihat */
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* ==== GLOW untuk kartu/baris hasil di mobile ==== */
+@media (max-width:560px){
+  .table tbody tr{
+    position: relative;
+    overflow: hidden;
+    border-radius: 14px;     /* samakan dengan tr */
+  }
+  .table tbody tr::before{
+    content:"";
+    position:absolute; inset:0;
+    border-radius: inherit;
+    padding: 2px;
+    background: linear-gradient(90deg,
+      #f4c542, #ffffff, #d6a400, #f4c542, #ffffff, #d6a400);
+    background-size: 400% 400%;
+    animation: neonRun 4s linear infinite;
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    pointer-events: none;
+  }
+}
+
+/* (opsional) reduksi animasi untuk pengguna sensitive motion */
+@media (prefers-reduced-motion: reduce){
+  .section .card::before,
+  .table tbody tr::before{ animation: none; }
+}
     
   </style>
   
