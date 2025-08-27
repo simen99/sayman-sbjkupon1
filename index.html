@@ -668,6 +668,26 @@ body { padding-bottom: calc(90px + env(safe-area-inset-bottom)); } /* ruang utk 
   50%  { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
+
+    .slider-title{
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: .5px;
+  margin-bottom: 12px;
+  color: var(--gold);
+  text-shadow: 0 0 12px rgba(244,197,66,.6), 0 0 24px rgba(244,197,66,.4);
+  text-align: center;     /* center semua device */
+  line-height: 1.3;       /* biar jarak antar baris pas */
+  white-space: normal;    /* biar bisa turun baris */
+}
+
+/* khusus layar hp */
+@media (max-width:560px){
+  .slider-title{
+    font-size: 18px;        /* sedikit lebih kecil di HP */
+    display: block;
+  }
+}
     
   </style>
   
@@ -689,7 +709,9 @@ body { padding-bottom: calc(90px + env(safe-area-inset-bottom)); } /* ruang utk 
 
  <!-- SLIDER + TITLE + BOX -->
 <div class="slider-section">
-  <div class="slider-title">BONUS MENARIK KHUSUS MEMBER SETIA</div>
+  <div class="slider-title">
+    BONUS MENARIK<br>KHUSUS MEMBER SETIA
+    </div>
   <div class="slider-box">
     <div class="mini-slider" id="miniSlider" aria-label="Promo Slider">
       <div class="ms-track" id="msTrack"></div>
