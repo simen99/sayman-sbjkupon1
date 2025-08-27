@@ -772,17 +772,24 @@ body { padding-bottom: calc(90px + env(safe-area-inset-bottom)); } /* ruang utk 
 
     /* pesan di atas hasil */
 .result-msg{
-  display:flex; align-items:center; justify-content:center; gap:8px;
-  text-align:center; font-weight:800;
+  display:flex; 
+  align-items:center; 
+  justify-content:center; 
+  gap:4px;               /* tadinya 8px → lebih rapat */
+  text-align:center; 
+  font-weight:800;
   color:var(--gold);
   margin:12px 0 16px;
   text-shadow:0 0 10px rgba(244,197,66,.45);
   letter-spacing:.2px;
 }
+
 .result-msg .star{
   font-size:18px;
   animation: twinkle 1.6s ease-in-out infinite;
+  margin:0 2px;          /* kasih jarak tipis biar tidak nempel banget */
 }
+    
 @keyframes twinkle{
   0%,100%{ opacity:.5; transform:scale(.95); }
   50%{ opacity:1; transform:scale(1); }
