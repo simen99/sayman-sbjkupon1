@@ -839,6 +839,29 @@ body { padding-bottom: calc(90px + env(safe-area-inset-bottom)); } /* ruang utk 
   12% { opacity:.85; filter:brightness(1.1); }
   20% { opacity:.6;  filter:brightness(1.25); }
 }
+
+    /* Sparkle Background */
+.sparkle-bg{
+  position:relative; overflow:hidden;
+}
+    
+.sparkle-bg::before{
+  content:"";
+  position:absolute; inset:-20% -10%;
+  background:
+    radial-gradient(3px 3px at 10% 20%, rgba(255,255,255,.35), transparent 60%),
+    radial-gradient(2px 2px at 70% 30%, rgba(244,197,66,.45), transparent 60%),
+    radial-gradient(2px 2px at 30% 80%, rgba(255,255,255,.35), transparent 60%),
+    radial-gradient(3px 3px at 90% 60%, rgba(244,197,66,.45), transparent 60%);
+  animation: sparkleDrift 8s linear infinite alternate;
+  filter: blur(.3px);
+  pointer-events:none;
+}
+    
+@keyframes sparkleDrift{
+  0%{ transform: translateY(-4%) translateX(-2%); opacity:.8; }
+  100%{ transform: translateY(4%) translateX(2%);  opacity:1; }
+}
     
   </style>
   
