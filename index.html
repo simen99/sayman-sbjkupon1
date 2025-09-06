@@ -808,6 +808,37 @@ body { padding-bottom: calc(90px + env(safe-area-inset-bottom)); } /* ruang utk 
     margin:0 1px;         /* rapatkan lagi */
   }
 }
+
+    /* Ripple Ink (pure CSS on :active) */
+.ripple-ink{
+  position:relative; overflow:hidden;
+  transition: transform .08s ease, filter .2s ease;
+}
+.ripple-ink:active::after{
+  content:"";
+  position:absolute; inset:0;
+  background: radial-gradient(150px 150px at var(--rx,50%) var(--ry,50%), rgba(255,255,255,.35), transparent 60%);
+  animation: rippleFade .6s ease forwards;
+}
+@keyframes rippleFade{
+  from{ opacity:.9; }
+  to{ opacity:0; }
+}
+/* opsional: pusatkan ripple di tengah untuk perangkat tanpa mouse */
+.ripple-ink:active{ --rx:50%; --ry:50%; }
+
+    /* Neon Text Flicker */
+.neon-flicker{
+  text-shadow:
+    0 0 8px rgba(244,197,66,.35),
+    0 0 16px rgba(244,197,66,.25);
+  animation: neonFlicker 3.8s ease-in-out infinite;
+}
+@keyframes neonFlicker{
+  0%, 10%, 22%, 100% { opacity:1; filter:brightness(1); }
+  12% { opacity:.85; filter:brightness(1.1); }
+  20% { opacity:.6;  filter:brightness(1.25); }
+}
     
   </style>
   
