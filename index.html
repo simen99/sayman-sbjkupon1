@@ -862,6 +862,151 @@ body { padding-bottom: calc(90px + env(safe-area-inset-bottom)); } /* ruang utk 
   0%{ transform: translateY(-4%) translateX(-2%); opacity:.8; }
   100%{ transform: translateY(4%) translateX(2%);  opacity:1; }
 }
+
+/* =========================================================
+   SBJ – Add-on CSS (Desktop + Mobile + Fallback)
+   Tempel di BAWAH CSS kamu sekarang.
+   ========================================================= */
+
+/* —(1) Focus Ring Keemasan (ini efek apa: highlight saat fokus/keyboard tab) — */
+:where(button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])):focus-visible{
+  outline:2px solid var(--gold);
+  outline-offset:2px;
+  box-shadow:0 0 0 4px rgba(244,197,66,.18);
+}
+
+/* —(2) Hover Glow Tombol (ini efek apa: tombol glow + sedikit naik) — */
+.btn{
+  will-change: transform, filter, box-shadow;
+  transition: transform .1s ease, filter .2s ease, box-shadow .2s ease;
+}
+.btn:hover{
+  filter:brightness(1.06);
+  box-shadow:0 12px 32px rgba(244,197,66,.35);
+}
+.btn:active{ transform:translateY(1px) scale(.99); }
+
+/* —(3) Ripple Ink Tekan (ini efek apa: kilau bulat saat ditekan) — */
+.ripple-ink{ position:relative; overflow:hidden; }
+.ripple-ink:active::after{
+  content:"";
+  position:absolute; inset:0;
+  background: radial-gradient(150px 150px at var(--rx,50%) var(--ry,50%), rgba(255,255,255,.35), transparent 60%);
+  animation: sbjRipple .6s ease forwards;
+}
+@keyframes sbjRipple{ from{opacity:.9} to{opacity:0} }
+
+/* —(4) Panel Gold Neon Border (ini efek apa: border emas berjalan/glow) — */
+.panel{
+  position:relative; overflow:hidden;
+  background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+  box-shadow: 0 10px 40px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.03);
+}
+.panel::before{
+  content:"";
+  position:absolute; inset:0; border-radius:inherit; padding:2px;
+  background: linear-gradient(90deg,#f4c542,#fff,#d6a400,#f4c542,#fff,#d6a400);
+  background-size:400% 400%; animation: sbjNeon 4s linear infinite;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude; pointer-events:none;
+}
+@keyframes sbjNeon{ 0%{background-position:0 50%} 100%{background-position:400% 50%} }
+
+/* —(5) Kartu Hasil Glow (ini efek apa: kotak hasil ada bingkai emas animasi) — */
+.section .card{ position:relative; overflow:hidden; border-radius:18px; }
+.section .card::before{
+  content:""; position:absolute; inset:0; border-radius:inherit; padding:2px;
+  background: linear-gradient(90deg,#f4c542,#fff,#d6a400,#f4c542,#fff,#d6a400);
+  background-size:400% 400%; animation: sbjNeon 4s linear infinite;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude; pointer-events:none;
+}
+
+/* —(6) Table “Kartu” Mobile (ini efek apa: tabel jadi kartu-kartu rapi di HP) — */
+@media (max-width:560px){
+  .table thead{ display:none; }
+  .table{ border-collapse:separate; border-spacing:0 10px; }
+  .table tbody{ display:block; }
+  .table tbody tr{
+    display:block; border-radius:14px;
+    background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.025));
+    border:1px solid rgba(255,255,255,.08);
+    padding:12px; margin:12px 0;
+    box-shadow:0 6px 18px rgba(0,0,0,.25);
+    position:relative; overflow:hidden;
+  }
+  .table tbody td{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:10px; border:0 !important; padding:8px 0; text-align:left;
+  }
+  .table tbody td::before{
+    content: attr(data-label);
+    flex:0 0 auto; color:var(--muted); font-size:12px; font-weight:600;
+    letter-spacing:.2px; text-transform:uppercase; margin-right:10px;
+  }
+  .table tbody td > *{ flex:1 1 auto; }
+}
+
+/* —(7) Mini-Slider Poles (ini efek apa: slider ada shadow & dot aktif bersinar) — */
+.mini-slider{ border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,.28); }
+.ms-dots{ bottom:10px; }
+.ms-dot{ width:10px; height:10px; border-radius:999px; background:rgba(255,255,255,.45);
+  border:1px solid rgba(0,0,0,.25); box-shadow:0 0 6px rgba(255,255,255,.25);
+  transition:transform .2s, background .2s, box-shadow .2s;
+}
+.ms-dot.active{ background:var(--gold); transform:scale(1.25); box-shadow:0 0 12px rgba(244,197,66,.8); }
+
+/* —(8) Toast Blur (ini efek apa: kotak notifikasi blur kaca) — */
+.toast-item{
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+@supports not ((backdrop-filter: blur(2px)) or (-webkit-backdrop-filter: blur(2px))){
+  .toast-item{ background: rgba(23,23,34,.92); } /* fallback HP lama */
+}
+
+/* —(9) Popup Promo Fit (ini efek apa: gambar selalu proporsional; aman di layar kecil) — */
+.popup-wrap{ max-height:80vh; }
+.popup-img{ object-fit:contain; }
+
+/* —(10) Safe Area Bottom (ini efek apa: jarak aman untuk notch & bubble chat) — */
+:root{ --safe-bottom: max(env(safe-area-inset-bottom), 16px); }
+body{ padding-bottom: calc(72px + var(--safe-bottom)); }
+.floating-buttons{ bottom: calc(72px + var(--safe-bottom)); }
+
+/* —(11) Reduced Motion Respect (ini efek apa: matikan animasi bagi pengguna sensitif) — */
+@media (prefers-reduced-motion: reduce){
+  .btn, .copy-btn, .ms-track, .popup-img, .result-msg .star,
+  .panel::before, .section .card::before, .table tbody tr::before{
+    animation:none !important; transition:none !important;
+  }
+}
+
+/* —(12) Fallback HP Lama (ini efek apa: kalau browser nggak paham gap/backdrop/clamp) — */
+@supports not (gap: 10px){
+  .hero > *{ margin:6px 6px 0 0; }
+  .searchbar > *{ margin-bottom:10px; }
+}
+@supports not (font-size: clamp(1px,2px,3px)){
+  .title{ font-size:26px; }
+  @media (min-width:480px){ .title{ font-size:30px; } }
+  @media (min-width:720px){ .title{ font-size:34px; } }
+}
+
+/* —(13) Badge Glow Halus (ini efek apa: lencana ada glow lembut) — */
+.badge{
+  box-shadow: 0 0 18px rgba(244,197,66,.35),
+              0 0 0 1px rgba(244,197,66,.25) inset;
+  border:1px solid rgba(244,197,66,.35);
+}
+
+/* —(14) Kopi Cepat Tombol Copy (ini efek apa: feedback visual saat sukses copy) — */
+.copy-btn{
+  transition: transform .12s ease, filter .15s ease, box-shadow .2s ease;
+  box-shadow:0 2px 10px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.25);
+}
+.copy-btn:hover{ transform:translateY(-1px); filter:brightness(1.04); }
+.copy-btn:active{ transform:translateY(0) scale(.98); }
     
   </style>
   
