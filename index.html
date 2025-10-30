@@ -7,6 +7,7 @@
   <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/simen99/sayman-sbjkupon1/refs/heads/main/LOGO%20WEB%20ATAS.jfif">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <style>
     :root{
       --bg:#0b0b0f;
@@ -611,7 +612,7 @@ body { padding-bottom: calc(90px + env(safe-area-inset-bottom)); } /* ruang utk 
   box-shadow:0 0 12px rgba(244,197,66,.8);
 }
 
-* Badge lebih besar & elegan di layar kecil */
+/* Badge lebih besar & elegan di layar kecil */
 @media (max-width: 560px){
   .badge {
     font-size: 15px;          /* teks lebih besar */
@@ -707,12 +708,6 @@ body { padding-bottom: calc(90px + env(safe-area-inset-bottom)); } /* ruang utk 
     font-size: 18px;        /* sedikit lebih kecil di HP */
     display: block;
   }
-}
-
-    /* --- animasi glow (kalau belum ada) --- */
-@keyframes neonRun{
-  0%   { background-position:   0% 50%; }
-  100% { background-position: 400% 50%; }
 }
 
 /* ==== GLOW untuk box hasil (kotak luar) ==== */
@@ -896,20 +891,6 @@ body { padding-bottom: calc(90px + env(safe-area-inset-bottom)); } /* ruang utk 
 }
 @keyframes sbjRipple{ from{opacity:.9} to{opacity:0} }
 
-/* —(4) Panel Gold Neon Border (ini efek apa: border emas berjalan/glow) — */
-.panel{
-  position:relative; overflow:hidden;
-  background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
-  box-shadow: 0 10px 40px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.03);
-}
-.panel::before{
-  content:"";
-  position:absolute; inset:0; border-radius:inherit; padding:2px;
-  background: linear-gradient(90deg,#f4c542,#fff,#d6a400,#f4c542,#fff,#d6a400);
-  background-size:400% 400%; animation: sbjNeon 4s linear infinite;
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor; mask-composite: exclude; pointer-events:none;
-}
 @keyframes sbjNeon{ 0%{background-position:0 50%} 100%{background-position:400% 50%} }
 
 /* —(5) Kartu Hasil Glow (ini efek apa: kotak hasil ada bingkai emas animasi) — */
@@ -1007,13 +988,142 @@ body{ padding-bottom: calc(72px + var(--safe-bottom)); }
 }
 .copy-btn:hover{ transform:translateY(-1px); filter:brightness(1.04); }
 .copy-btn:active{ transform:translateY(0) scale(.98); }
+
+    /* =========================================================
+   SBJX — Add-on (No-Conflict)
+   Semua class baru diawali .sbjx- & var --sbjx-*.
+   ========================================================= */
+
+:root{
+  --sbjx-gold: #f4c542;
+  --sbjx-gold2:#d6a400;
+  --sbjx-ink:#0e0e15;
+  --sbjx-soft:#15151f;
+  --sbjx-txt:#e9e9ef;
+  --sbjx-muted:#a5a5b5;
+  --sbjx-glow: 0 12px 34px rgba(244,197,66,.32);
+}
+
+/* ---------- UTILITIES ---------- */
+.sbjx-hidden{ display:none !important; }
+.sbjx-visually-hidden{
+  position:absolute !important; width:1px;height:1px; margin:-1px; padding:0;
+  border:0; clip:rect(0 0 0 0); overflow:hidden; white-space:nowrap;
+}
+.sbjx-stack > * + *{ margin-top: var(--gap,12px); }
+.sbjx-divider{
+  height:1px; background:linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent);
+  margin:12px 0;
+}
+
+/* ---------- CHIPS & BADGES ---------- */
+.sbjx-chip{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:8px 12px; border-radius:999px;
+  background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+  border:1px solid rgba(255,255,255,.14);
+  color:var(--sbjx-txt); font-weight:700; letter-spacing:.2px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+}
+
+/* ---------- BUTTON VARIANTS (tambahan) ---------- */
+.sbjx-btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  border:0; border-radius:14px; padding:12px 16px; cursor:pointer;
+  font-weight:800; letter-spacing:.3px; text-decoration:none; user-select:none;
+  transition: transform .12s ease, filter .18s ease, box-shadow .18s ease;
+}
+.sbjx-btn:active{ transform: translateY(1px) scale(.99); }
+
+/* Emas outline (beda dari .btn milikmu) */
+.sbjx-btn-outline{
+  background:linear-gradient(#0c0c12,#0c0c12) padding-box,
+             linear-gradient(180deg,var(--sbjx-gold),var(--sbjx-gold2)) border-box;
+  border:1px solid transparent; color:var(--sbjx-txt);
+}
+.sbjx-btn-outline:hover{ box-shadow: var(--sbjx-glow); }
+
+/* Ghost (transparan halus) */
+.sbjx-btn-ghost{
+  background: rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.12);
+  color:var(--sbjx-txt);
+}
+.sbjx-btn-ghost:hover{ filter:brightness(1.05); box-shadow:0 8px 22px rgba(0,0,0,.35); }
+
+/* ---------- CARDS MINI (tambahan) ---------- */
+.sbjx-card{
+  background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.025));
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:16px; padding:14px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.03);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.sbjx-card:hover{ transform: translateY(-2px); box-shadow:0 12px 30px rgba(0,0,0,.4); }
+
+/* ---------- GOLD SHINE BORDER (bisa dipakai di container apapun) ---------- */
+.sbjx-gold-border{ position:relative; border-radius:16px; overflow:hidden; }
+.sbjx-gold-border::before{
+  content:""; position:absolute; inset:0; border-radius:inherit; padding:2px;
+  background: linear-gradient(90deg, var(--sbjx-gold), #fff, var(--sbjx-gold2), var(--sbjx-gold), #fff, var(--sbjx-gold2));
+  background-size: 400% 400%;
+  animation: sbjxNeon 4s linear infinite;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude; pointer-events:none;
+}
+@keyframes sbjxNeon{ 0%{background-position:0 50%} 100%{background-position:400% 50%} }
+
+/* ---------- TEXT EFFECTS ---------- */
+.sbjx-text-shimmer{
+  background: linear-gradient(180deg, #fff, #c9c9d6 55%, #9a9ab0);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  background-size:200% auto; animation: sbjxText 8s linear infinite;
+  text-shadow: 0 0 10px rgba(244,197,66,.08);
+}
+@keyframes sbjxText{ 0%{background-position:0% center} 100%{background-position:200% center} }
+
+.sbjx-twinkle{ position:relative; }
+.sbjx-twinkle::after{
+  content:"✨"; position:absolute; right:-18px; top:-6px; font-size:14px;
+  animation: sbjxTwinkle 1.8s ease-in-out infinite;
+}
+@keyframes sbjxTwinkle{ 0%,100%{ opacity:.5; transform:scale(.9)} 50%{opacity:1; transform:scale(1)} }
+
+/* ---------- TABLE HOVER POLISH (tidak sentuh .table milikmu) ---------- */
+.sbjx-table{
+  width:100%; border-collapse:separate; border-spacing:0 10px;
+}
+.sbjx-table thead th{
+  background:#15151f; color:var(--sbjx-gold); padding:12px; text-align:center;
+}
+.sbjx-table tbody tr{
+  background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.025));
+  border:1px solid rgba(255,255,255,.08); border-radius:14px; overflow:hidden;
+  box-shadow:0 8px 22px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.03);
+  transition: transform .16s ease, background .16s ease;
+}
+.sbjx-table tbody tr:hover{ transform: translateY(-1px); }
+.sbjx-table td{ padding:14px; text-align:center; }
+
+/* ---------- SCROLLBAR EMAS (scoped agar tidak ganggu global) ---------- */
+[data-sbjx-scroll]::-webkit-scrollbar{ width:10px; height:10px; }
+[data-sbjx-scroll]::-webkit-scrollbar-track{ background:#0b0b0f; }
+[data-sbjx-scroll]::-webkit-scrollbar-thumb{
+  background: linear-gradient(180deg, var(--sbjx-gold), var(--sbjx-gold2));
+  border-radius:999px; border:2px solid #0b0b0f;
+}
+
+/* ---------- REDUCED MOTION RESPECT ---------- */
+@media (prefers-reduced-motion: reduce){
+  .sbjx-text-shimmer, .sbjx-twinkle::after, .sbjx-gold-border::before{ animation:none !important; }
+}
     
   </style>
   
 </head>
 <body>
   <div class="wrap">
-    <div class="hero"><span class="badge">SlotBangJago - Cari Kupon Lucksypin</span></div>
+    <div class="hero"><span class="badge">SlotBangJago - Cari Kupon Luckyspin</span></div>
     <h1 class="title">Cari Kupon & Validasi User ID</h1>
     <p class="subtitle">Masukkan <b>USER ID</b> aktif kamu. Jika cocok, sistem akan menampilkan semua kupon luckyspin kamu.✨</p>
 
@@ -1045,7 +1155,7 @@ body{ padding-bottom: calc(72px + var(--safe-bottom)); }
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-  <div class="toast" id="toast"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script>
   const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw1T0uc9aC6caI7HJLOyrbQyfoA2X4yhEMW7jA_0EhOnqwQZFHseBdzzaGJXagMXwAt/exec";
@@ -1446,6 +1556,15 @@ const MINI_SLIDES = [
       !n.__lc.asyncInit&&e.init(),n.LiveChatWidget=n.LiveChatWidget||e
     }(window,document,[].slice))
   </script>
+
+  <script>
+document.addEventListener('DOMContentLoaded', () => $("#q").focus());
+document.addEventListener('keydown', (e) => {
+  if (e.key === '/' && !e.target.closest('input,textarea')) {
+    e.preventDefault(); $("#q").focus();
+  }
+});
+</script>
   
   <noscript>
     <a href="https://www.livechat.com/chat-with/11798511/" rel="nofollow">Chat with us</a>,
