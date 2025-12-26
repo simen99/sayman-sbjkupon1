@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+.<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
@@ -1631,7 +1631,7 @@ document.addEventListener('keydown', (e) => {
   const ctx = canvas.getContext('2d', { alpha: true });
 
   // TUNING
-  const DPR_CAP = 80;       // FIX: jangan 85
+  const DPR_CAP = 0.85;       // FIX: jangan 85
   const MAX_FLAKES = 38;
   const DENSITY_DIV = 35000;
   const WIND = 0.10;
@@ -1764,6 +1764,29 @@ document.addEventListener('keydown', (e) => {
     sctx.fill();
   })();
 
+  // ===== TEMPATKAN KODE INI DI SINI =====
+// Pre-render sprite berwarna (hindari tint source-atop per partikel)
+const HUE_STEP = 30; // 12 sprite (0..330)
+const colorSprites = [];
+for (let h = 0; h < 360; h += HUE_STEP) {
+  const c = document.createElement('canvas');
+  c.width = c.height = 64;
+  const cctx = c.getContext('2d');
+
+  cctx.drawImage(sparkSprite, 0, 0);
+  cctx.globalCompositeOperation = 'source-atop';
+  cctx.fillStyle = `hsla(${h}, 100%, 65%, 1)`;
+  cctx.fillRect(0, 0, 64, 64);
+  cctx.globalCompositeOperation = 'source-over';
+
+  colorSprites.push(c);
+}
+
+function pickSpriteByHue(hue){
+  const idx = Math.round(hue / HUE_STEP) % colorSprites.length;
+  return colorSprites[idx];
+}
+
   const rand = (min, max)=> Math.random() * (max - min) + min;
   const clamp = (v, a, b)=> Math.max(a, Math.min(b, v));
 
@@ -1804,7 +1827,7 @@ document.addEventListener('keydown', (e) => {
 }
 
   function explode(x, y, hue){
-    const base = Math.floor(rand(70, 110));
+    const base = Math.floor(rand(45, 75));
     const count = Math.min(base, Math.max(0, MAX_PARTICLES - particles.length));
     if (count <= 0) return;
 
@@ -1817,7 +1840,7 @@ document.addEventListener('keydown', (e) => {
         vy: Math.sin(ang)*spd,
         life: rand(0.9, 1.6),
         age: 0,
-        size: rand(6, 14),
+        size: rand(5, 11),
         hue: (hue + rand(-18, 18) + 360) % 360,
         alpha: rand(0.55, 0.95),
         twinkle: Math.random() < 0.35
@@ -1826,15 +1849,10 @@ document.addEventListener('keydown', (e) => {
   }
 
   function drawGlow(x, y, size, hue, alpha){
-    ctx.globalAlpha = alpha;
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.drawImage(sparkSprite, -size/2, -size/2, size, size);
-    ctx.globalCompositeOperation = 'source-atop';
-    ctx.fillStyle = `hsla(${hue}, 100%, 65%, 1)`;
-    ctx.fillRect(-size/2, -size/2, size, size);
-    ctx.restore();
-  }
+  const spr = pickSpriteByHue(hue);
+  ctx.globalAlpha = alpha;
+  ctx.drawImage(spr, x - size/2, y - size/2, size, size);
+}
 
   let lastLaunch = 0;
 
