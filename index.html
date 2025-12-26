@@ -1631,9 +1631,9 @@ document.addEventListener('keydown', (e) => {
   const ctx = canvas.getContext('2d', { alpha: true });
 
   // TUNING
-  const DPR_CAP = 90;       // FIX: jangan 85
-  const MAX_FLAKES = 50;
-  const DENSITY_DIV = 30000;
+  const DPR_CAP = 80;       // FIX: jangan 85
+  const MAX_FLAKES = 38;
+  const DENSITY_DIV = 35000;
   const WIND = 0.10;
 
   let W = 0, H = 0, dpr = 1;
@@ -1736,12 +1736,12 @@ document.addEventListener('keydown', (e) => {
   const ctx = canvas.getContext('2d', { alpha: true });
 
   const DPR_CAP = 1.0;
-  const LAUNCH_EVERY_MS = 1100;  // dari 900 -> 1100 (lebih jarang)
+  const LAUNCH_EVERY_MS = 1400;  // dari 900 -> 1100 (lebih jarang)
   const MAX_ROCKETS = 1;         // dari 2 -> 1 (paling ngaruh)
-  const MAX_PARTICLES = 650;     // dari 900 -> 650
+  const MAX_PARTICLES = 550;     // dari 900 -> 650
   const GRAVITY = 220;
   const AIR_DRAG = 0.985;
-  const TRAIL_LEN = 14;          // dari 18 -> 14
+  const TRAIL_LEN = 12;          // dari 18 -> 14
 
   let W=0, H=0, dpr=1;
   let lastT = performance.now();
