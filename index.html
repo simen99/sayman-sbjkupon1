@@ -1631,9 +1631,9 @@ document.addEventListener('keydown', (e) => {
   const ctx = canvas.getContext('2d', { alpha: true });
 
   // TUNING
-  const DPR_CAP = 0.85;       // FIX: jangan 85
-  const MAX_FLAKES = 38;
-  const DENSITY_DIV = 35000;
+  const DPR_CAP = 0.75;
+const MAX_FLAKES = 28;
+const DENSITY_DIV = 52000;
   const WIND = 0.10;
 
   let W = 0, H = 0, dpr = 1;
@@ -1680,44 +1680,52 @@ document.addEventListener('keydown', (e) => {
     canvas.style.height = H + 'px';
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-    const target = Math.min(MAX_FLAKES, Math.max(30, Math.floor((W * H) / DENSITY_DIV)));
+    const target = Math.min(MAX_FLAKES, Math.max(12, Math.floor((W * H) / DENSITY_DIV)));
     while (flakes.length < target) flakes.push(makeFlake(true));
     while (flakes.length > target) flakes.pop();
   }
 
-  let last = performance.now();
+  let lastSim = performance.now();
+let lastFrame = performance.now();
+  
   function step(now){
-    if (!running) return;
-    const dt = Math.min(0.033, (now - last) / 1000);
-    last = now;
+  if (!running) return;
 
-    ctx.clearRect(0, 0, W, H);
+  // limiter ~30fps (Android lawas)
+  if (now - lastFrame < 33) { requestAnimationFrame(step); return; }
+  lastFrame = now;
 
-    for (let i = 0; i < flakes.length; i++){
-      const f = flakes[i];
-      f.phase += dt * f.sway * 2.2;
-      f.x += (f.vx + Math.sin(f.phase) * 10 + WIND * 60) * dt;
-      f.y += f.vy * dt;
+  const dt = Math.min(0.033, (now - lastSim) / 1000);
+  lastSim = now;
 
-      if (f.y > H + 20) { flakes[i] = makeFlake(false); continue; }
-      if (f.x < -30) f.x = W + 30;
-      if (f.x > W + 30) f.x = -30;
+  ctx.clearRect(0, 0, W, H);
 
-      ctx.globalAlpha = f.a;
-      ctx.drawImage(sprite, f.x, f.y, f.size, f.size);
-    }
+  for (let i = 0; i < flakes.length; i++){
+    const f = flakes[i];
+    f.phase += dt * f.sway * 2.2;
+    f.x += (f.vx + Math.sin(f.phase) * 10 + WIND * 60) * dt;
+    f.y += f.vy * dt;
 
-    ctx.globalAlpha = 1;
-    requestAnimationFrame(step);
+    if (f.y > H + 20) { flakes[i] = makeFlake(false); continue; }
+    if (f.x < -30) f.x = W + 30;
+    if (f.x > W + 30) f.x = -30;
+
+    ctx.globalAlpha = f.a;
+    ctx.drawImage(sprite, f.x, f.y, f.size, f.size);
   }
 
+  ctx.globalAlpha = 1;
+  requestAnimationFrame(step);
+}
+  
   document.addEventListener('visibilitychange', () => {
-    running = !document.hidden;
-    if (running) {
-      last = performance.now();
-      requestAnimationFrame(step);
-    }
-  });
+  running = !document.hidden;
+  if (running) {
+    lastSim = performance.now();
+    lastFrame = performance.now();
+    requestAnimationFrame(step);
+  }
+});
 
   window.addEventListener('resize', resize, { passive: true });
 
@@ -1735,7 +1743,7 @@ document.addEventListener('keydown', (e) => {
   if (!canvas) return;
   const ctx = canvas.getContext('2d', { alpha: true });
 
-  const DPR_CAP = 1.0;
+  const DPR_CAP = 0.8;
   const LAUNCH_EVERY_MS = 1400;  // dari 900 -> 1100 (lebih jarang)
   const MAX_ROCKETS = 1;         // dari 2 -> 1 (paling ngaruh)
   const MAX_PARTICLES = 550;     // dari 900 -> 650
@@ -1827,7 +1835,7 @@ function pickSpriteByHue(hue){
 }
 
   function explode(x, y, hue){
-    const base = Math.floor(rand(45, 75));
+    const base = Math.floor(rand(28, 45));
     const count = Math.min(base, Math.max(0, MAX_PARTICLES - particles.length));
     if (count <= 0) return;
 
@@ -1840,10 +1848,10 @@ function pickSpriteByHue(hue){
         vy: Math.sin(ang)*spd,
         life: rand(0.9, 1.6),
         age: 0,
-        size: rand(5, 11),
+        size: rand(4, 9),
         hue: (hue + rand(-18, 18) + 360) % 360,
         alpha: rand(0.55, 0.95),
-        twinkle: Math.random() < 0.35
+        twinkle: false
       });
     }
   }
@@ -1855,86 +1863,93 @@ function pickSpriteByHue(hue){
 }
 
   let lastLaunch = 0;
+  let lastFrame = performance.now();
 
   function step(now){
-    if (!running) return;
-    const dt = clamp((now - lastT) / 1000, 0, 0.033);
-    lastT = now;
+  if (!running) return;
 
-    // clear perlahan (tanpa menghitamkan layar)
-    ctx.globalCompositeOperation = 'destination-out';
-ctx.fillStyle = 'rgba(0,0,0,0.22)';
-ctx.fillRect(0, 0, W, H);
-    
-    ctx.globalCompositeOperation = 'lighter';
+  // limiter ~30fps (boleh ganti 42 untuk ~24fps jika mau lebih ringan)
+  if (now - lastFrame < 33) { requestAnimationFrame(step); return; }
+  lastFrame = now;
 
-    if (now - lastLaunch > LAUNCH_EVERY_MS && rockets.length < MAX_ROCKETS){
-      rockets.push(makeRocket());
-      lastLaunch = now;
-    }
+  const dt = Math.min(0.033, (now - lastT) / 1000);
+  lastT = now;
 
-    for (let i = rockets.length - 1; i >= 0; i--){
-      const r = rockets[i];
-      r.vx *= AIR_DRAG;
-r.vy += GRAVITY * 0.55 * dt;
+  // clear perlahan
+  ctx.globalCompositeOperation = 'destination-out';
+  ctx.fillStyle = 'rgba(0,0,0,0.22)';
+  ctx.fillRect(0, 0, W, H);
 
-// waktu terbang
-r.t += dt;
+  ctx.globalCompositeOperation = 'lighter';
 
-// Y update tetap normal
-r.y += r.vy * dt;
-
-// X: baseX + offset zig-zag (zig mengecil saat mendekati titik ledak)
-r.baseX += r.vx * dt;
-
-const prog = clamp((H - r.y) / H, 0, 1);       // 0 bawah -> 1 atas
-const taper = 1 - prog * 0.55;                 // zig mengecil ke atas
-
-const zigOffset = r.zigOn
-  ? Math.sin(r.t * r.zigFreq + r.zigPhase) * r.zigAmp * taper
-  : 0;
-
-r.x = r.baseX + zigOffset;
-
-      r.trail.pop();
-      r.trail.unshift({x:r.x, y:r.y});
-
-      for (let t=0; t<r.trail.length; t++){
-        const p = r.trail[t];
-        const k = 1 - (t / r.trail.length);
-        drawGlow(p.x, p.y, 10 + k*18, (r.hue + (1-k)*25) % 360, 0.04 + k*0.22);
-      }
-      drawGlow(r.x, r.y, 18, r.hue, 0.65);
-
-      if (r.y <= r.explodeY || r.vy > -40){
-        explode(r.x, r.y, r.hue);
-        rockets.splice(i, 1);
-      }
-    }
-
-    for (let i = particles.length - 1; i >= 0; i--){
-      const p = particles[i];
-      p.age += dt;
-      if (p.age >= p.life){ particles.splice(i,1); continue; }
-
-      p.vx *= AIR_DRAG; p.vy *= AIR_DRAG;
-      p.vy += GRAVITY * dt;
-      p.x += p.vx * dt; p.y += p.vy * dt;
-
-      const t = p.age / p.life;
-      let a = p.alpha * (1 - t);
-      if (p.twinkle && Math.random() < 0.12) a *= rand(0.2, 1);
-
-      drawGlow(p.x, p.y, p.size * (1 - t*0.35), p.hue, a);
-    }
-
-    ctx.globalAlpha = 1;
-    requestAnimationFrame(step);
+  if (now - lastLaunch > LAUNCH_EVERY_MS && rockets.length < MAX_ROCKETS){
+    rockets.push(makeRocket());
+    lastLaunch = now;
   }
 
+  // update rockets
+  for (let i = rockets.length - 1; i >= 0; i--){
+    const r = rockets[i];
+
+    r.vx *= AIR_DRAG;
+    r.vy += GRAVITY * 0.55 * dt;
+
+    r.t += dt;
+    r.y += r.vy * dt;
+    r.baseX += r.vx * dt;
+
+    const prog = clamp((H - r.y) / H, 0, 1);
+    const taper = 1 - prog * 0.55;
+
+    const zigOffset = r.zigOn
+      ? Math.sin(r.t * r.zigFreq + r.zigPhase) * r.zigAmp * taper
+      : 0;
+
+    r.x = r.baseX + zigOffset;
+
+    r.trail.pop();
+    r.trail.unshift({x:r.x, y:r.y});
+
+    for (let t=0; t<r.trail.length; t++){
+      const p = r.trail[t];
+      const k = 1 - (t / r.trail.length);
+      drawGlow(p.x, p.y, 10 + k*18, (r.hue + (1-k)*25) % 360, 0.04 + k*0.22);
+    }
+    drawGlow(r.x, r.y, 18, r.hue, 0.65);
+
+    if (r.y <= r.explodeY || r.vy > -40){
+      explode(r.x, r.y, r.hue);
+      rockets.splice(i, 1);
+    }
+  }
+
+  // update particles
+  for (let i = particles.length - 1; i >= 0; i--){
+    const p = particles[i];
+    p.age += dt;
+    if (p.age >= p.life){ particles.splice(i,1); continue; }
+
+    p.vx *= AIR_DRAG; p.vy *= AIR_DRAG;
+    p.vy += GRAVITY * dt;
+    p.x += p.vx * dt; p.y += p.vy * dt;
+
+    const t = p.age / p.life;
+    let a = p.alpha * (1 - t);
+    if (p.twinkle && Math.random() < 0.12) a *= rand(0.2, 1);
+
+    drawGlow(p.x, p.y, p.size * (1 - t*0.35), p.hue, a);
+  }
+
+  ctx.globalAlpha = 1;
+  requestAnimationFrame(step);
+}
   document.addEventListener('visibilitychange', () => {
     running = !document.hidden;
-    if (running){ lastT = performance.now(); requestAnimationFrame(step); }
+    if (running) {
+      lastT = performance.now();
+      lastFrame = performance.now();
+      requestAnimationFrame(step);
+    }
   });
 
   window.addEventListener('resize', resize, { passive: true });
@@ -1942,7 +1957,7 @@ r.x = r.baseX + zigOffset;
   resize();
   requestAnimationFrame(step);
 })();
+</script>
   
-</script>  
 </body>
 </html>
