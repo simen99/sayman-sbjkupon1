@@ -220,6 +220,8 @@
   animation: dotPulse 1.2s ease-out infinite;
 }
 
+.popup-dot{ position: relative; }
+
 @keyframes dotPulse{
   0%   { transform: scale(.6); opacity:.9; }
   70%  { transform: scale(1.6); opacity:.2; }
@@ -1220,7 +1222,7 @@ body{ padding-bottom: calc(72px + var(--safe-bottom)); }
       <div class="sk-bar"></div>
     `;
     // kasih random delay/arah tiap skeleton
-    box.querySelectorAll(".sk-bar").forEach(bar=>{
+    Array.prototype.forEach.call(box.querySelectorAll(".sk-bar"), bar => {
       const dir = Math.random() > 0.5 ? "normal" : "reverse"; // arah random
       const speed = (1.5 + Math.random()).toFixed(2);         // 1.5s – 2.5s
       bar.style.animationDirection = dir;
@@ -1554,18 +1556,21 @@ const MINI_SLIDES = [
 /* Polyfill object-fit:cover untuk browser lama (Android lawas/iOS lama) */
 (function(){
   var test = 'objectFit' in document.documentElement.style;
-  if (test) return; // modern — aman
+  if (test) return;
 
-  document.querySelectorAll('.ms-slide img').forEach(function(img){
+  var list = document.querySelectorAll('.ms-slide img');
+  Array.prototype.forEach.call(list, function(img){
     var src = img.getAttribute('src');
-    var holder = img.parentNode;  // <a> di dalam .ms-slide
-    holder.style.backgroundImage  = 'url("'+src+'")';
-    holder.style.backgroundSize   = 'cover';
+    var holder = img.parentNode;
+    holder.style.backgroundImage = 'url("'+src+'")';
+    holder.style.backgroundSize = 'cover';
     holder.style.backgroundRepeat = 'no-repeat';
     holder.style.backgroundPosition = 'center';
-    img.style.opacity = '0';      // sembunyikan <img>, pakai background
+    img.style.opacity = '0';
   });
 })();
+
+    
 </script>
   
   <script>
