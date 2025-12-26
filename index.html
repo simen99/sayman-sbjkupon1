@@ -1779,14 +1779,29 @@ document.addEventListener('keydown', (e) => {
   }
 
   function makeRocket(){
-    const x = rand(W*0.15, W*0.85);
-    const y = H + 10;
-    const vx = rand(-30, 30);
-    const vy = rand(-520, -720);
-    const hue = rand(0, 360);
-    const explodeY = rand(H*0.20, H*0.45);
-    return { x,y,vx,vy,hue,explodeY, trail: Array.from({length: TRAIL_LEN}, ()=>({x,y})) };
-  }
+  const x = rand(W*0.15, W*0.85);
+  const y = H + 10;
+  const vx = rand(-30, 30);
+  const vy = rand(-520, -720);
+  const hue = rand(0, 360);
+  const explodeY = rand(H*0.20, H*0.45);
+
+  // zig-zag: tidak semua roket (biar realistis & ringan)
+  const zigOn = Math.random() < 0.55;               // 55% roket zig-zag
+  const zigAmp = rand(28, 70);
+  const zigFreq = rand(10, 16);
+  const zigPhase = rand(0, Math.PI * 2);            // fase awal
+
+  return {
+    x, y,
+    baseX: x,            // FIX: posisi dasar tanpa zig
+    vx, vy,
+    hue, explodeY,
+    t: 0,                // waktu terbang roket
+    zigOn, zigAmp, zigFreq, zigPhase,
+    trail: Array.from({length: TRAIL_LEN}, ()=>({x, y}))
+  };
+}
 
   function explode(x, y, hue){
     const base = Math.floor(rand(70, 110));
@@ -1830,7 +1845,8 @@ document.addEventListener('keydown', (e) => {
 
     // clear perlahan (tanpa menghitamkan layar)
     ctx.globalCompositeOperation = 'destination-out';
-    ctx.fillRect(0, 0, W, H);
+ctx.fillStyle = 'rgba(0,0,0,0.18)';  // fade halus
+ctx.fillRect(0, 0, W, H);
 
     ctx.globalCompositeOperation = 'lighter';
 
@@ -1842,9 +1858,25 @@ document.addEventListener('keydown', (e) => {
     for (let i = rockets.length - 1; i >= 0; i--){
       const r = rockets[i];
       r.vx *= AIR_DRAG;
-      r.vy += GRAVITY * 0.55 * dt;
-      r.x += r.vx * dt;
-      r.y += r.vy * dt;
+r.vy += GRAVITY * 0.55 * dt;
+
+// waktu terbang
+r.t += dt;
+
+// Y update tetap normal
+r.y += r.vy * dt;
+
+// X: baseX + offset zig-zag (zig mengecil saat mendekati titik ledak)
+r.baseX += r.vx * dt;
+
+const prog = clamp((H - r.y) / H, 0, 1);       // 0 bawah -> 1 atas
+const taper = 1 - prog * 0.55;                 // zig mengecil ke atas
+
+const zigOffset = r.zigOn
+  ? Math.sin(r.t * r.zigFreq + r.zigPhase) * r.zigAmp * taper
+  : 0;
+
+r.x = r.baseX + zigOffset;
 
       r.trail.pop();
       r.trail.unshift({x:r.x, y:r.y});
