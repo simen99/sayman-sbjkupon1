@@ -1631,9 +1631,9 @@ document.addEventListener('keydown', (e) => {
   const ctx = canvas.getContext('2d', { alpha: true });
 
   // TUNING
-  const DPR_CAP = 1.25;       // FIX: jangan 85
-  const MAX_FLAKES = 95;
-  const DENSITY_DIV = 22000;
+  const DPR_CAP = 90;       // FIX: jangan 85
+  const MAX_FLAKES = 50;
+  const DENSITY_DIV = 30000;
   const WIND = 0.10;
 
   let W = 0, H = 0, dpr = 1;
@@ -1735,13 +1735,13 @@ document.addEventListener('keydown', (e) => {
   if (!canvas) return;
   const ctx = canvas.getContext('2d', { alpha: true });
 
-  const DPR_CAP = 1.5;
-  const LAUNCH_EVERY_MS = 900;
-  const MAX_ROCKETS = 2;
-  const MAX_PARTICLES = 900;
+  const DPR_CAP = 1.0;
+  const LAUNCH_EVERY_MS = 1100;  // dari 900 -> 1100 (lebih jarang)
+  const MAX_ROCKETS = 1;         // dari 2 -> 1 (paling ngaruh)
+  const MAX_PARTICLES = 650;     // dari 900 -> 650
   const GRAVITY = 220;
   const AIR_DRAG = 0.985;
-  const TRAIL_LEN = 18;
+  const TRAIL_LEN = 14;          // dari 18 -> 14
 
   let W=0, H=0, dpr=1;
   let lastT = performance.now();
@@ -1845,9 +1845,9 @@ document.addEventListener('keydown', (e) => {
 
     // clear perlahan (tanpa menghitamkan layar)
     ctx.globalCompositeOperation = 'destination-out';
-ctx.fillStyle = 'rgba(0,0,0,0.18)';  // fade halus
+ctx.fillStyle = 'rgba(0,0,0,0.22)';
 ctx.fillRect(0, 0, W, H);
-
+    
     ctx.globalCompositeOperation = 'lighter';
 
     if (now - lastLaunch > LAUNCH_EVERY_MS && rockets.length < MAX_ROCKETS){
