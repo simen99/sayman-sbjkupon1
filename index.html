@@ -1617,9 +1617,12 @@ document.addEventListener('keydown', (e) => {
   </a>
 </div>
 
-  <canvas id="sbjSnow" aria-hidden="true"></canvas>
+<!-- CANVAS HARUS DI LUAR SCRIPT -->
+<canvas id="sbjSnow" aria-hidden="true"></canvas>
+<canvas id="sbjFireworks" aria-hidden="true"></canvas>
 
-  <script>
+<!-- ====== SNOW SCRIPT (SENDIRI) ====== -->
+<script>
 (() => {
   if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
@@ -1627,17 +1630,15 @@ document.addEventListener('keydown', (e) => {
   if (!canvas) return;
   const ctx = canvas.getContext('2d', { alpha: true });
 
-  // ===== TUNING (ubah ini kalau mau) =====
-  const DPR_CAP = 85;       // 1.0–1.5 (lebih kecil = lebih ringan)
-  const MAX_FLAKES = 95;      // 50–120
-  const DENSITY_DIV = 22000;  // makin besar = makin sedikit salju
-  const WIND = 0.10;          // 0.0–0.3
-  // ======================================
+  // TUNING
+  const DPR_CAP = 1.25;       // FIX: jangan 85
+  const MAX_FLAKES = 95;
+  const DENSITY_DIV = 22000;
+  const WIND = 0.10;
 
   let W = 0, H = 0, dpr = 1;
   let running = true;
 
-  // Sprite flake (lebih ringan daripada ctx.arc per flake)
   const sprite = document.createElement('canvas');
   const sctx = sprite.getContext('2d');
   sprite.width = sprite.height = 24;
@@ -1653,16 +1654,15 @@ document.addEventListener('keydown', (e) => {
   })();
 
   const flakes = [];
-
-  function rand(min, max){ return Math.random() * (max - min) + min; }
+  const rand = (min, max) => Math.random() * (max - min) + min;
 
   function makeFlake(init=false){
     return {
       x: rand(0, W),
       y: init ? rand(-H, H) : rand(-40, -10),
-      size: rand(6, 14),          // ukuran sprite
-      vy: rand(35, 95),           // px/detik
-      vx: rand(-14, 14),          // px/detik
+      size: rand(6, 14),
+      vy: rand(35, 95),
+      vx: rand(-14, 14),
       sway: rand(0.6, 1.6),
       phase: rand(0, Math.PI * 2),
       a: rand(0.25, 0.85)
@@ -1688,16 +1688,13 @@ document.addEventListener('keydown', (e) => {
   let last = performance.now();
   function step(now){
     if (!running) return;
-
-    // delta time (detik) agar smooth walau fps turun
-    const dt = Math.min(0.033, (now - last) / 1000); // cap 33ms
+    const dt = Math.min(0.033, (now - last) / 1000);
     last = now;
 
     ctx.clearRect(0, 0, W, H);
 
     for (let i = 0; i < flakes.length; i++){
       const f = flakes[i];
-
       f.phase += dt * f.sway * 2.2;
       f.x += (f.vx + Math.sin(f.phase) * 10 + WIND * 60) * dt;
       f.y += f.vy * dt;
@@ -1727,8 +1724,9 @@ document.addEventListener('keydown', (e) => {
   resize();
   requestAnimationFrame(step);
 })();
+</script>
 
-    <canvas id="sbjFireworks" aria-hidden="true"></canvas>
+<!-- ====== FIREWORKS SCRIPT (SENDIRI) ====== -->
 <script>
 (() => {
   if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -1737,15 +1735,13 @@ document.addEventListener('keydown', (e) => {
   if (!canvas) return;
   const ctx = canvas.getContext('2d', { alpha: true });
 
-  // ===== TUNING (aman untuk performa) =====
-  const DPR_CAP = 1.5;             // turunkan ke 1.2 kalau device lemah
-  const LAUNCH_EVERY_MS = 900;     // semakin kecil = semakin sering
-  const MAX_ROCKETS = 2;           // batasi roket aktif
-  const MAX_PARTICLES = 900;       // global cap partikel
-  const GRAVITY = 220;             // px/s^2
-  const AIR_DRAG = 0.985;          // gesekan udara (0.97-0.995)
-  const TRAIL_LEN = 18;            // panjang ekor roket
-  // =======================================
+  const DPR_CAP = 1.5;
+  const LAUNCH_EVERY_MS = 900;
+  const MAX_ROCKETS = 2;
+  const MAX_PARTICLES = 900;
+  const GRAVITY = 220;
+  const AIR_DRAG = 0.985;
+  const TRAIL_LEN = 18;
 
   let W=0, H=0, dpr=1;
   let lastT = performance.now();
@@ -1754,7 +1750,6 @@ document.addEventListener('keydown', (e) => {
   const rockets = [];
   const particles = [];
 
-  // sprite untuk glow (lebih murah daripada arc berkali-kali)
   const sparkSprite = document.createElement('canvas');
   sparkSprite.width = sparkSprite.height = 64;
   const sctx = sparkSprite.getContext('2d');
@@ -1769,14 +1764,13 @@ document.addEventListener('keydown', (e) => {
     sctx.fill();
   })();
 
-  function rand(min, max){ return Math.random() * (max - min) + min; }
-  function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
+  const rand = (min, max)=> Math.random() * (max - min) + min;
+  const clamp = (v, a, b)=> Math.max(a, Math.min(b, v));
 
   function resize(){
     dpr = Math.min(window.devicePixelRatio || 1, DPR_CAP);
     W = Math.floor(window.innerWidth);
     H = Math.floor(window.innerHeight);
-
     canvas.width = Math.floor(W * dpr);
     canvas.height = Math.floor(H * dpr);
     canvas.style.width = W + 'px';
@@ -1791,64 +1785,36 @@ document.addEventListener('keydown', (e) => {
     const vy = rand(-520, -720);
     const hue = rand(0, 360);
     const explodeY = rand(H*0.20, H*0.45);
-
-    return {
-      x, y, vx, vy, hue, explodeY,
-      trail: Array.from({length: TRAIL_LEN}, () => ({x, y}))
-    };
+    return { x,y,vx,vy,hue,explodeY, trail: Array.from({length: TRAIL_LEN}, ()=>({x,y})) };
   }
 
   function explode(x, y, hue){
-    // jumlah partikel per ledakan (dibatasi global)
     const base = Math.floor(rand(70, 110));
     const count = Math.min(base, Math.max(0, MAX_PARTICLES - particles.length));
     if (count <= 0) return;
 
-    // ledakan utama
     for (let i=0; i<count; i++){
       const ang = Math.random() * Math.PI * 2;
       const spd = rand(120, 420);
-      const vx = Math.cos(ang) * spd;
-      const vy = Math.sin(ang) * spd;
-      const life = rand(0.9, 1.6);
-
       particles.push({
-        x, y, vx, vy,
-        life, age: 0,
+        x,y,
+        vx: Math.cos(ang)*spd,
+        vy: Math.sin(ang)*spd,
+        life: rand(0.9, 1.6),
+        age: 0,
         size: rand(6, 14),
         hue: (hue + rand(-18, 18) + 360) % 360,
         alpha: rand(0.55, 0.95),
         twinkle: Math.random() < 0.35
       });
     }
-
-    // glitter kecil (spark tambahan)
-    const glitter = Math.floor(rand(14, 26));
-    const gCount = Math.min(glitter, Math.max(0, MAX_PARTICLES - particles.length));
-    for (let i=0; i<gCount; i++){
-      const ang = Math.random() * Math.PI * 2;
-      const spd = rand(220, 520);
-      particles.push({
-        x, y,
-        vx: Math.cos(ang) * spd,
-        vy: Math.sin(ang) * spd,
-        life: rand(0.45, 0.8),
-        age: 0,
-        size: rand(3, 7),
-        hue: (hue + rand(-35, 35) + 360) % 360,
-        alpha: rand(0.35, 0.8),
-        twinkle: true
-      });
-    }
   }
 
   function drawGlow(x, y, size, hue, alpha){
     ctx.globalAlpha = alpha;
-    ctx.filter = 'none';
     ctx.save();
     ctx.translate(x, y);
     ctx.drawImage(sparkSprite, -size/2, -size/2, size, size);
-    // tint color layer (lebih “real”)
     ctx.globalCompositeOperation = 'source-atop';
     ctx.fillStyle = `hsla(${hue}, 100%, 65%, 1)`;
     ctx.fillRect(-size/2, -size/2, size, size);
@@ -1859,117 +1825,74 @@ document.addEventListener('keydown', (e) => {
 
   function step(now){
     if (!running) return;
-
     const dt = clamp((now - lastT) / 1000, 0, 0.033);
     lastT = now;
 
-    // Fade frame untuk efek motion blur (tanpa background hitam)
-    ctx.globalCompositeOperation = 'source-over';
-    ctx.fillStyle = 'rgba(0,0,0,0.18)';
-    // pakai destination-out untuk menghapus perlahan tanpa menghitamkan halaman
+    // clear perlahan (tanpa menghitamkan layar)
     ctx.globalCompositeOperation = 'destination-out';
     ctx.fillRect(0, 0, W, H);
 
-    // mode additive untuk glow
     ctx.globalCompositeOperation = 'lighter';
 
-    // Launch rocket berkala
     if (now - lastLaunch > LAUNCH_EVERY_MS && rockets.length < MAX_ROCKETS){
       rockets.push(makeRocket());
       lastLaunch = now;
     }
 
-    // Update & draw rockets
     for (let i = rockets.length - 1; i >= 0; i--){
       const r = rockets[i];
-
-      // update physics
       r.vx *= AIR_DRAG;
-      r.vy += GRAVITY * 0.55 * dt; // roket sedikit kena gravity
+      r.vy += GRAVITY * 0.55 * dt;
       r.x += r.vx * dt;
       r.y += r.vy * dt;
 
-      // update trail
       r.trail.pop();
-      r.trail.unshift({ x: r.x, y: r.y });
+      r.trail.unshift({x:r.x, y:r.y});
 
-      // draw trail (ekor api)
-      for (let t = 0; t < r.trail.length; t++){
+      for (let t=0; t<r.trail.length; t++){
         const p = r.trail[t];
         const k = 1 - (t / r.trail.length);
-        const size = 10 + k * 18;
-        const a = 0.04 + k * 0.22;
-        // sedikit lebih kuning di ekor dekat roket
-        const hue = (r.hue + (1-k)*25) % 360;
-        drawGlow(p.x, p.y, size, hue, a);
+        drawGlow(p.x, p.y, 10 + k*18, (r.hue + (1-k)*25) % 360, 0.04 + k*0.22);
       }
-
-      // roket head
       drawGlow(r.x, r.y, 18, r.hue, 0.65);
 
-      // explode condition
       if (r.y <= r.explodeY || r.vy > -40){
         explode(r.x, r.y, r.hue);
         rockets.splice(i, 1);
       }
     }
 
-    // Update & draw particles
     for (let i = particles.length - 1; i >= 0; i--){
       const p = particles[i];
       p.age += dt;
+      if (p.age >= p.life){ particles.splice(i,1); continue; }
 
-      if (p.age >= p.life){
-        particles.splice(i, 1);
-        continue;
-      }
-
-      // physics
-      p.vx *= AIR_DRAG;
-      p.vy *= AIR_DRAG;
+      p.vx *= AIR_DRAG; p.vy *= AIR_DRAG;
       p.vy += GRAVITY * dt;
-      p.x += p.vx * dt;
-      p.y += p.vy * dt;
+      p.x += p.vx * dt; p.y += p.vy * dt;
 
-      // alpha fade with easing
       const t = p.age / p.life;
       let a = p.alpha * (1 - t);
       if (p.twinkle && Math.random() < 0.12) a *= rand(0.2, 1);
 
-      const size = p.size * (1 - t * 0.35);
-
-      drawGlow(p.x, p.y, size, p.hue, a);
+      drawGlow(p.x, p.y, p.size * (1 - t*0.35), p.hue, a);
     }
 
-    // reset states
     ctx.globalAlpha = 1;
-    ctx.filter = 'none';
-
     requestAnimationFrame(step);
   }
 
   document.addEventListener('visibilitychange', () => {
     running = !document.hidden;
-    if (running){
-      lastT = performance.now();
-      requestAnimationFrame(step);
-    }
+    if (running){ lastT = performance.now(); requestAnimationFrame(step); }
   });
 
   window.addEventListener('resize', resize, { passive: true });
 
   resize();
   requestAnimationFrame(step);
-
-  // Optional: expose trigger manual (kalau mau dipanggil saat hadiah keluar)
-  window.__SBJ_FIREWORKS__ = {
-    burst(x = W/2, y = H*0.35){
-      explode(x, y, rand(0,360));
-    }
-  };
 })();
-    
-</script>
   
+</script>  
 </body>
 </html>
