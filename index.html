@@ -1607,22 +1607,56 @@ document.addEventListener('keydown', (e) => {
 
   <script>
 (() => {
-  // Jika user prefer reduced motion, jangan animasi
   if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   const canvas = document.getElementById('sbjSnow');
   if (!canvas) return;
-
   const ctx = canvas.getContext('2d', { alpha: true });
-  let W = 0, H = 0, dpr = 1;
 
-  // tuning performa
-  const MAX_FLAKES = 120;
-  const flakes = [];
+  // ===== TUNING (ubah ini kalau mau) =====
+  const DPR_CAP = 1.25;       // 1.0–1.5 (lebih kecil = lebih ringan)
+  const MAX_FLAKES = 80;      // 50–120
+  const DENSITY_DIV = 26000;  // makin besar = makin sedikit salju
+  const WIND = 0.10;          // 0.0–0.3
+  // ======================================
+
+  let W = 0, H = 0, dpr = 1;
   let running = true;
 
+  // Sprite flake (lebih ringan daripada ctx.arc per flake)
+  const sprite = document.createElement('canvas');
+  const sctx = sprite.getContext('2d');
+  sprite.width = sprite.height = 24;
+  (() => {
+    const r = 10;
+    const g = sctx.createRadialGradient(12, 12, 0, 12, 12, r);
+    g.addColorStop(0, 'rgba(255,255,255,1)');
+    g.addColorStop(1, 'rgba(255,255,255,0)');
+    sctx.fillStyle = g;
+    sctx.beginPath();
+    sctx.arc(12, 12, r, 0, Math.PI * 2);
+    sctx.fill();
+  })();
+
+  const flakes = [];
+
+  function rand(min, max){ return Math.random() * (max - min) + min; }
+
+  function makeFlake(init=false){
+    return {
+      x: rand(0, W),
+      y: init ? rand(-H, H) : rand(-40, -10),
+      size: rand(6, 14),          // ukuran sprite
+      vy: rand(35, 95),           // px/detik
+      vx: rand(-14, 14),          // px/detik
+      sway: rand(0.6, 1.6),
+      phase: rand(0, Math.PI * 2),
+      a: rand(0.25, 0.85)
+    };
+  }
+
   function resize(){
-    dpr = Math.min(window.devicePixelRatio || 1, 2); // cap biar tidak berat
+    dpr = Math.min(window.devicePixelRatio || 1, DPR_CAP);
     W = Math.floor(window.innerWidth);
     H = Math.floor(window.innerHeight);
 
@@ -1630,72 +1664,48 @@ document.addEventListener('keydown', (e) => {
     canvas.height = Math.floor(H * dpr);
     canvas.style.width = W + 'px';
     canvas.style.height = H + 'px';
-
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-    // density berdasarkan luas layar (aman untuk mobile)
-    const target = Math.min(
-      MAX_FLAKES,
-      Math.max(35, Math.floor((W * H) / 18000))
-    );
-
-    // sesuaikan jumlah flakes
+    const target = Math.min(MAX_FLAKES, Math.max(30, Math.floor((W * H) / DENSITY_DIV)));
     while (flakes.length < target) flakes.push(makeFlake(true));
     while (flakes.length > target) flakes.pop();
   }
 
-  function rand(min, max){ return Math.random() * (max - min) + min; }
-
-  function makeFlake(initial=false){
-    return {
-      x: rand(0, W),
-      y: initial ? rand(-H, H) : rand(-40, -10),
-      r: rand(1.2, 3.2),
-      vy: rand(0.6, 1.8),
-      vx: rand(-0.35, 0.35),
-      sway: rand(0.6, 1.6),
-      a: rand(0.35, 0.9),
-      phase: rand(0, Math.PI * 2)
-    };
-  }
-
-  function step(){
+  let last = performance.now();
+  function step(now){
     if (!running) return;
+
+    // delta time (detik) agar smooth walau fps turun
+    const dt = Math.min(0.033, (now - last) / 1000); // cap 33ms
+    last = now;
 
     ctx.clearRect(0, 0, W, H);
 
     for (let i = 0; i < flakes.length; i++){
       const f = flakes[i];
 
-      // gerak jatuh + sway halus
-      f.phase += 0.01 * f.sway;
-      f.x += f.vx + Math.sin(f.phase) * 0.35;
-      f.y += f.vy;
+      f.phase += dt * f.sway * 2.2;
+      f.x += (f.vx + Math.sin(f.phase) * 10 + WIND * 60) * dt;
+      f.y += f.vy * dt;
 
-      // wrap
-      if (f.y > H + 10) {
-        flakes[i] = makeFlake(false);
-        continue;
-      }
-      if (f.x < -10) f.x = W + 10;
-      if (f.x > W + 10) f.x = -10;
+      if (f.y > H + 20) { flakes[i] = makeFlake(false); continue; }
+      if (f.x < -30) f.x = W + 30;
+      if (f.x > W + 30) f.x = -30;
 
-      // draw
-      ctx.beginPath();
       ctx.globalAlpha = f.a;
-      ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
-      ctx.fillStyle = '#ffffff';
-      ctx.fill();
+      ctx.drawImage(sprite, f.x, f.y, f.size, f.size);
     }
 
     ctx.globalAlpha = 1;
     requestAnimationFrame(step);
   }
 
-  // pause saat tab tidak aktif (hemat)
   document.addEventListener('visibilitychange', () => {
     running = !document.hidden;
-    if (running) requestAnimationFrame(step);
+    if (running) {
+      last = performance.now();
+      requestAnimationFrame(step);
+    }
   });
 
   window.addEventListener('resize', resize, { passive: true });
@@ -1704,6 +1714,6 @@ document.addEventListener('keydown', (e) => {
   requestAnimationFrame(step);
 })();
 </script>
-
+  
 </body>
 </html>
