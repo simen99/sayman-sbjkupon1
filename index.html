@@ -1973,6 +1973,133 @@ function pickSpriteByHue(hue){
   requestAnimationFrame(step);
 })();
 </script>
+
+  <!-- In-app browser detector + Open in Chrome modal (Android) -->
+<style>
+  .openchrome-backdrop{
+    position:fixed; inset:0; background:rgba(0,0,0,.6);
+    display:none; align-items:center; justify-content:center;
+    z-index:99999;
+  }
+  .openchrome-card{
+    width:min(92vw,420px); background:#111; color:#fff;
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:14px; padding:16px;
+    box-shadow:0 10px 30px rgba(0,0,0,.45);
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  }
+  .openchrome-card h3{ margin:0 0 8px; font-size:16px; }
+  .openchrome-card p{ margin:0 0 14px; font-size:13px; line-height:1.35; color:rgba(255,255,255,.85); }
+  .openchrome-actions{ display:flex; gap:10px; }
+  .openchrome-btn{
+    flex:1; border-radius:10px; padding:12px 10px;
+    border:1px solid rgba(255,255,255,.14);
+    background:#1d1d1d; color:#fff; font-weight:600;
+    cursor:pointer;
+  }
+  .openchrome-btn.primary{ background:#2563eb; border-color:#2563eb; }
+  .openchrome-mini{ margin-top:10px; font-size:12px; color:rgba(255,255,255,.75); }
+</style>
+
+<div id="openChromeBackdrop" class="openchrome-backdrop" role="dialog" aria-modal="true">
+  <div class="openchrome-card">
+    <h3>Buka di Chrome untuk aktifkan notifikasi</h3>
+    <p>Anda sedang membuka link dari aplikasi (WhatsApp/Media Sosial). Untuk subscribe notifikasi OneSignal, buka halaman ini di Chrome.</p>
+
+    <div class="openchrome-actions">
+      <button id="btnLater" class="openchrome-btn">Nanti</button>
+      <button id="btnOpenChrome" class="openchrome-btn primary">Buka di Chrome</button>
+    </div>
+
+    <div class="openchrome-actions" style="margin-top:10px;">
+      <button id="btnCopyLink" class="openchrome-btn">Salin Link</button>
+    </div>
+
+    <div class="openchrome-mini" id="openChromeHint"></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const ua = navigator.userAgent || navigator.vendor || window.opera;
+
+  // Deteksi in-app browser populer
+  const isInApp =
+    /WhatsApp|Instagram|FBAN|FBAV|FB_IAB|Messenger|Line|TikTok|Twitter|Snapchat/i.test(ua);
+
+  const isAndroid = /Android/i.test(ua);
+  const isIOS = /iPhone|iPad|iPod/i.test(ua);
+
+  const backdrop = document.getElementById("openChromeBackdrop");
+  const btnOpenChrome = document.getElementById("btnOpenChrome");
+  const btnLater = document.getElementById("btnLater");
+  const btnCopyLink = document.getElementById("btnCopyLink");
+  const hint = document.getElementById("openChromeHint");
+
+  function showModal() { backdrop.style.display = "flex"; }
+  function hideModal() { backdrop.style.display = "none"; }
+
+  // Tampilkan popup hanya jika terdeteksi in-app browser
+  if (isInApp) {
+    showModal();
+    if (isIOS) {
+      hint.textContent = "iPhone: gunakan tombol Share → Open in Browser / Buka di Safari/Chrome (jika tersedia).";
+    } else if (isAndroid) {
+      hint.textContent = "Android: tombol 'Buka di Chrome' akan mencoba membuka Chrome langsung.";
+    } else {
+      hint.textContent = "Jika tombol tidak bekerja, salin link lalu buka di Chrome.";
+    }
+  }
+
+  btnLater.addEventListener("click", hideModal);
+
+  btnCopyLink.addEventListener("click", async function () {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      btnCopyLink.textContent = "Tersalin";
+      setTimeout(() => (btnCopyLink.textContent = "Salin Link"), 1200);
+    } catch (e) {
+      // Fallback lama
+      const tmp = document.createElement("textarea");
+      tmp.value = window.location.href;
+      document.body.appendChild(tmp);
+      tmp.select();
+      document.execCommand("copy");
+      document.body.removeChild(tmp);
+      btnCopyLink.textContent = "Tersalin";
+      setTimeout(() => (btnCopyLink.textContent = "Salin Link"), 1200);
+    }
+  });
+
+  btnOpenChrome.addEventListener("click", function () {
+    const href = window.location.href;
+
+    // Android: coba lempar ke Chrome via intent:// (harus via klik user)
+    if (isAndroid) {
+      const intentUrl =
+        "intent://" +
+        window.location.host +
+        window.location.pathname +
+        window.location.search +
+        window.location.hash +
+        "#Intent;scheme=https;package=com.android.chrome;end";
+
+      // Coba intent; kalau diblokir, fallback buka url normal
+      window.location.href = intentUrl;
+
+      // fallback setelah 900ms (kalau intent gagal / diblokir)
+      setTimeout(function () {
+        window.location.href = href;
+      }, 900);
+
+      return;
+    }
+
+    // iOS/desktop: tidak bisa paksa buka Chrome. Fallback: buka normal.
+    window.location.href = href;
+  });
+})();
+</script>
   
 </body>
 </html>
