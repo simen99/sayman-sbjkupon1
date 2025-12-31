@@ -1262,16 +1262,7 @@ body{
   </style>
 
    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-  
-<script>
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-  OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "00c33fd3-e850-4e1a-9773-a015271ec15e",
-    });
-  });
-</script>
-  
+
 </head>
 <body>
   <div class="wrap">
@@ -2314,6 +2305,55 @@ function openLiveChat(tryCount = 0){
   // kalau rotate HP
   window.addEventListener("resize", hideLiveChatMobile);
 })();
+</script>
+
+  <script>
+(function(){
+  if (window.innerWidth > 767) return;
+
+  function killLiveChat(){
+    // hapus iframe livechat
+    document.querySelectorAll(
+      'iframe[src*="livechat"], iframe[src*="lc.chat"], iframe[src*="livechatinc"]'
+    ).forEach(el => el.remove());
+
+    // hapus container launcher
+    document.querySelectorAll(
+      '#chat-widget-container, .lc-compact, .lc-minimized, .lc-chat, [id*="livechat"]'
+    ).forEach(el => el.remove());
+  }
+
+  // jalankan berkali-kali (karena widget suka re-render)
+  killLiveChat();
+  setInterval(killLiveChat, 800);
+})();
+</script>
+
+ <script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+
+    const isMobile = window.innerWidth <= 767;
+
+    await OneSignal.init({
+      appId: "00c33fd3-e850-4e1a-9773-a015271ec15e",
+
+      /* 🔒 MOBILE: matikan semua UI OneSignal */
+      promptOptions: isMobile ? {
+        slidedown: { enabled: false },
+        customlink: { enabled: false }
+      } : undefined
+    });
+
+    /* HARD BLOCK UI OneSignal di mobile */
+    if (isMobile) {
+      setInterval(() => {
+        document.querySelectorAll(
+          '[id*="onesignal"], [class*="onesignal"], iframe[src*="onesignal"]'
+        ).forEach(el => el.remove());
+      }, 800);
+    }
+  });
 </script>
   
 </body>
