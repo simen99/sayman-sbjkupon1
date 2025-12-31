@@ -1217,9 +1217,8 @@ body{
   .floating-buttons{
     display: none !important;
   }
-}
-    
-  </style>
+}   
+  </style>  /* PENUTUP CSS */
 
    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <script>
@@ -1647,29 +1646,37 @@ const MINI_SLIDES = [
 </script>
   
   <script>
-    window.__lc = window.__lc || {};
-    window.__lc.license = 11798511;
-    window.__lc.integration_name = "manual_channels";
-    window.__lc.product_name = "livechat";
-    ;(function(n,t,c){
-      function i(n){return e._h?e._h.apply(null,n):e._q.push(n)}
-      var e={_q:[],_h:null,_v:"2.0",
-        on:function(){i(["on",c.call(arguments)])},
-        once:function(){i(["once",c.call(arguments)])},
-        off:function(){i(["off",c.call(arguments)])},
-        get:function(){if(!e._h)throw new Error("[LiveChatWidget] You can't use getters before load.");return i(["get",c.call(arguments)])},
-        call:function(){i(["call",c.call(arguments)])},
-        init:function(){
-          var n=t.createElement("script");
-          n.async=!0;
-          n.type="text/javascript";
-          n.src="https://cdn.livechatinc.com/tracking.js";
-          t.head.appendChild(n)
-        }
-      };
-      !n.__lc.asyncInit&&e.init(),n.LiveChatWidget=n.LiveChatWidget||e
-    }(window,document,[].slice))
-  </script>
+  window.__lc = window.__lc || {};
+  window.__lc.license = 11798511;
+  window.__lc.integration_name = "manual_channels";
+  window.__lc.product_name = "livechat";
+
+  // ✅ MOBILE ONLY: sembunyikan launcher widget setelah LiveChat selesai load
+  window.__lc.on_after_load = function () {
+    if (window.innerWidth <= 767 && window.LiveChatWidget && LiveChatWidget.call) {
+      LiveChatWidget.call("hide");
+    }
+  };
+
+  ;(function(n,t,c){
+    function i(n){return e._h?e._h.apply(null,n):e._q.push(n)}
+    var e={_q:[],_h:null,_v:"2.0",
+      on:function(){i(["on",c.call(arguments)])},
+      once:function(){i(["once",c.call(arguments)])},
+      off:function(){i(["off",c.call(arguments)])},
+      get:function(){if(!e._h)throw new Error("[LiveChatWidget] You can't use getters before load.");return i(["get",c.call(arguments)])},
+      call:function(){i(["call",c.call(arguments)])},
+      init:function(){
+        var n=t.createElement("script");
+        n.async=!0;
+        n.type="text/javascript";
+        n.src="https://cdn.livechatinc.com/tracking.js";
+        t.head.appendChild(n)
+      }
+    };
+    !n.__lc.asyncInit&&e.init(),n.LiveChatWidget=n.LiveChatWidget||e
+  }(window,document,[].slice))
+</script>
 
   <script>
 document.addEventListener('DOMContentLoaded', () => $("#q").focus());
@@ -2181,11 +2188,10 @@ function pickSpriteByHue(hue){
     <span class="label">Pola Gacor</span>
   </a>
 
-  <button type="button" class="sbj-nav-item livechat" onclick="openLiveChat()">
-    <span class="icon">🎧</span>
-    <span class="label">Live Chat</span>
-  </button>
-</nav>
+  <a href="https://direct.lc.chat/11798511/" target="_blank" rel="noopener" class="sbj-nav-item livechat">
+  <span class="icon">🎧</span>
+  <span class="label">Live Chat</span>
+</a>
 
   <script>
 function openLiveChat(tryCount = 0){
@@ -2217,6 +2223,29 @@ function openLiveChat(tryCount = 0){
 
   // jaga-jaga kalau resize / rotate layar
   window.addEventListener("resize", hideLiveChatOnMobile);
+})();
+</script>
+
+  <script>
+(function(){
+  function hideLiveChatMobile(){
+    if (window.innerWidth <= 767 && window.LiveChatWidget && typeof LiveChatWidget.call === "function") {
+      LiveChatWidget.call("hide");
+    }
+  }
+
+  // tunggu sampai widget benar-benar siap
+  window.addEventListener("load", function(){
+    hideLiveChatMobile();
+
+    // jaga-jaga LiveChat render ulang
+    if (window.LiveChatWidget && LiveChatWidget.on) {
+      LiveChatWidget.on("ready", hideLiveChatMobile);
+    }
+  });
+
+  // kalau rotate HP
+  window.addEventListener("resize", hideLiveChatMobile);
 })();
 </script>
   
