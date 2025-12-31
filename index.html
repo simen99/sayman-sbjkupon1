@@ -1155,6 +1155,60 @@ body{ padding-bottom: calc(72px + var(--safe-bottom)); }
 @media (prefers-reduced-motion: reduce){
   #sbjFireworks { display:none !important; }
 }
+
+  /* ===== Bottom Nav Mobile Only ===== */
+.sbj-bottom-nav{
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 64px;
+  background: linear-gradient(180deg,#0f0f17,#0a0a10);
+  border-top: 1px solid rgba(255,255,255,.08);
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  z-index: 99999;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.sbj-nav-item{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  color:#e9e9ef;
+  font-size:11px;
+  font-weight:700;
+  text-decoration:none;
+  background:none;
+  border:0;
+  cursor:pointer;
+}
+
+.sbj-nav-item .icon{
+  font-size:20px;
+  line-height:1;
+}
+
+.sbj-nav-item.wa{ color:#25d366; }
+.sbj-nav-item.tg{ color:#2aabee; }
+.sbj-nav-item.pola{ color:#f4c542; }
+.sbj-nav-item.livechat{ color:#ff5c7a; }
+
+.sbj-nav-item:active{
+  transform: scale(.92);
+}
+
+/* sembunyikan di desktop */
+@media (min-width: 768px){
+  .sbj-bottom-nav{ display:none; }
+}
+
+/* beri ruang konten agar tidak ketutup nav */
+body{
+  padding-bottom: calc(64px + env(safe-area-inset-bottom));
+}
     
   </style>
 
@@ -2099,6 +2153,43 @@ function pickSpriteByHue(hue){
     window.location.href = href;
   });
 })();
+</script>
+
+  <!-- ===== Bottom Mobile Navigation ===== -->
+<nav class="sbj-bottom-nav">
+  <a href="https://klikblg.com/wa-sbj" target="_blank" rel="noopener" class="sbj-nav-item wa">
+    <span class="icon">💬</span>
+    <span class="label">WhatsApp</span>
+  </a>
+
+  <a href="https://klikblg.com/tele-sbj" target="_blank" rel="noopener" class="sbj-nav-item tg">
+    <span class="icon">✈️</span>
+    <span class="label">Telegram</span>
+  </a>
+
+  <a href="https://klikblg.com/pola-sbj" target="_blank" rel="noopener" class="sbj-nav-item pola">
+    <span class="icon">📊</span>
+    <span class="label">Pola Gacor</span>
+  </a>
+
+  <button type="button" class="sbj-nav-item livechat" onclick="openLiveChat()">
+    <span class="icon">🎧</span>
+    <span class="label">Live Chat</span>
+  </button>
+</nav>
+
+  <script>
+function openLiveChat(tryCount = 0){
+  if (window.LC_API && typeof window.LC_API.open_chat_window === "function") {
+    window.LC_API.open_chat_window();
+    return;
+  }
+  if (tryCount < 10) {
+    setTimeout(() => openLiveChat(tryCount + 1), 300);
+    return;
+  }
+  alert("Live Chat belum siap. Mohon coba lagi.");
+}
 </script>
   
 </body>
