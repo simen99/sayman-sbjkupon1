@@ -1162,7 +1162,7 @@ body{ padding-bottom: calc(72px + var(--safe-bottom)); }
   left: 0;
   right: 0;
   bottom: 0;
-  height: 64px;
+  height: 65px;
   background: linear-gradient(180deg,#0f0f17,#0a0a10);
   border-top: 1px solid rgba(255,255,255,.08);
   display: grid;
@@ -1176,19 +1176,22 @@ body{ padding-bottom: calc(72px + var(--safe-bottom)); }
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  gap:4px;
+  gap:3px;              /* ✅ dari 4px -> 3px */
+  padding-top:6px;      /* ✅ naikkan isi sedikit */
   color:#e9e9ef;
-  font-size:11px;
+  font-size:10.5px;     /* ✅ sedikit kecil biar muat rapi */
   font-weight:700;
   text-decoration:none;
   background:none;
   border:0;
   cursor:pointer;
+  line-height:1;        /* ✅ rapikan tinggi teks */
 }
 
 .sbj-nav-item .icon{
   font-size:20px;
   line-height:1;
+  margin-top:-2px;      /* ✅ ikon naik sedikit */
 }
 
 .sbj-nav-item.wa{ color:#25d366; }
@@ -1224,12 +1227,13 @@ body{
   text-shadow: 0 0 8px rgba(255,204,51,.45);
 }
 
-    .sbj-nav-item .icon-img{
-  width: 22px;
-  height: 22px;
+   .sbj-nav-item .icon-img{
+  width:22px;
+  height:22px;
   display:flex;
   align-items:center;
   justify-content:center;
+  margin-top:-2px;      /* ✅ samakan posisi dengan icon emoji */
 }
 
 .sbj-nav-item .icon-img img{
