@@ -1166,7 +1166,7 @@ body{ padding-bottom: calc(72px + var(--safe-bottom)); }
   background: linear-gradient(180deg,#0f0f17,#0a0a10);
   border-top: 1px solid rgba(255,255,255,.08);
   display: grid;
-  grid-template-columns: repeat(5,1fr);
+  grid-template-columns: repeat(6,1fr);
   z-index: 99999;
   padding-bottom: env(safe-area-inset-bottom);
 }
@@ -1222,6 +1222,26 @@ body{
     .sbj-nav-item.promo{
   color:#ffcc33;
   text-shadow: 0 0 8px rgba(255,204,51,.45);
+}
+
+    .sbj-nav-item .icon-img{
+  width: 22px;
+  height: 22px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.sbj-nav-item .icon-img img{
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;      /* biar keliatan “button” */
+  object-fit: cover;
+  box-shadow: 0 2px 10px rgba(0,0,0,.35);
+}
+
+.sbj-nav-item.rtp{
+  color:#f4c542;           /* senada emas */
 }
     
   </style>
@@ -2189,6 +2209,18 @@ function pickSpriteByHue(hue){
     <span class="icon">✈️</span>
     <span class="label">Telegram</span>
   </a>
+
+  <!-- RTP GACOR (sebelah kiri Promo) -->
+<a href="https://klikblg.com/rtp-slotbangjago"
+   target="_blank"
+   rel="noopener"
+   class="sbj-nav-item rtp">
+  <span class="icon-img">
+    <img src="https://raw.githubusercontent.com/simen99/sayman-sbjkupon1/refs/heads/main/BUTTON%20RTP%20SBJ.jpg"
+         alt="RTP Gacor" />
+  </span>
+  <span class="label">Rtp Gacor</span>
+</a>
 
   <!-- ⭐ PROMO BARU -->
   <a href="https://slotbangjagoalt21.com/mobile/promo"
