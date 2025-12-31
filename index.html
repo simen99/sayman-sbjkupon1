@@ -1175,23 +1175,25 @@ body{ padding-bottom: calc(72px + var(--safe-bottom)); }
   display:flex;
   flex-direction:column;
   align-items:center;
-  justify-content:center;
-  gap:3px;              /* ✅ dari 4px -> 3px */
-  padding-top:6px;      /* ✅ naikkan isi sedikit */
+  justify-content:flex-start; /* 🔑 PENTING */
+  padding-top:6px;
+  gap:2px;
   color:#e9e9ef;
-  font-size:10.5px;     /* ✅ sedikit kecil biar muat rapi */
   font-weight:700;
   text-decoration:none;
   background:none;
   border:0;
   cursor:pointer;
-  line-height:1;        /* ✅ rapikan tinggi teks */
 }
 
 .sbj-nav-item .icon{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  height:26px;          /* 🔑 KUNCI TINGGI IKON */
   font-size:20px;
   line-height:1;
-  margin-top:-2px;      /* ✅ ikon naik sedikit */
+  margin:0;
 }
 
 .sbj-nav-item.wa{ color:#25d366; }
@@ -1228,12 +1230,12 @@ body{
 }
 
    .sbj-nav-item .icon-img{
-  width:22px;
-  height:22px;
   display:flex;
   align-items:center;
   justify-content:center;
-  margin-top:-2px;      /* ✅ samakan posisi dengan icon emoji */
+  height:26px;          /* 🔑 SAMAKAN dengan .icon */
+  width:100%;
+  margin:0;
 }
 
 .sbj-nav-item .icon-img img{
@@ -1246,6 +1248,15 @@ body{
 
 .sbj-nav-item.rtp{
   color:#BF00FF;           /* senada emas */
+}
+
+    .sbj-nav-item .label{
+  display:block;
+  height:14px;          /* 🔑 KUNCI TINGGI TEKS */
+  line-height:14px;     /* 🔑 KUNCI BASELINE */
+  font-size:10.5px;
+  letter-spacing:.2px;
+  margin:0;
 }
     
   </style>
