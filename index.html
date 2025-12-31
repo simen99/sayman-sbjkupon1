@@ -1166,7 +1166,7 @@ body{ padding-bottom: calc(72px + var(--safe-bottom)); }
   background: linear-gradient(180deg,#0f0f17,#0a0a10);
   border-top: 1px solid rgba(255,255,255,.08);
   display: grid;
-  grid-template-columns: repeat(4,1fr);
+  grid-template-columns: repeat(5,1fr);
   z-index: 99999;
   padding-bottom: env(safe-area-inset-bottom);
 }
@@ -1218,9 +1218,16 @@ body{
     display: none !important;
   }
 }   
+
+    .sbj-nav-item.promo{
+  color:#ffcc33;
+  text-shadow: 0 0 8px rgba(255,204,51,.45);
+}
+    
   </style>
 
    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+  
 <script>
   window.OneSignalDeferred = window.OneSignalDeferred || [];
   OneSignalDeferred.push(async function(OneSignal) {
@@ -2183,15 +2190,28 @@ function pickSpriteByHue(hue){
     <span class="label">Telegram</span>
   </a>
 
-  <a href="https://klikblg.com/pola-sbj" target="_blank" rel="noopener" class="sbj-nav-item pola">
-    <span class="icon">📊</span>
-    <span class="label">Pola Gacor</span>
+  <!-- ⭐ PROMO BARU -->
+  <a href="https://slotbangjagoalt21.com/mobile/promo"
+     target="_blank"
+     rel="noopener"
+     class="sbj-nav-item promo">
+    <span class="icon">🎁</span>
+    <span class="label">Promo</span>
   </a>
 
-  <a href="https://direct.lc.chat/11798511/" target="_blank" rel="noopener" class="sbj-nav-item livechat">
-  <span class="icon">🎧</span>
-  <span class="label">Live Chat</span>
-</a>
+  <a href="https://klikblg.com/pola-sbj" target="_blank" rel="noopener" class="sbj-nav-item pola">
+    <span class="icon">📊</span>
+    <span class="label">Pola</span>
+  </a>
+
+  <a href="https://direct.lc.chat/11798511/"
+     target="_blank"
+     rel="noopener"
+     class="sbj-nav-item livechat">
+    <span class="icon">🎧</span>
+    <span class="label">Live Chat</span>
+  </a>
+</nav>
 
   <script>
 function openLiveChat(tryCount = 0){
