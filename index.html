@@ -1200,14 +1200,23 @@ body{ padding-bottom: calc(72px + var(--safe-bottom)); }
   transform: scale(.92);
 }
 
-/* sembunyikan di desktop */
+/* DESKTOP: sembunyikan bottom nav */
 @media (min-width: 768px){
-  .sbj-bottom-nav{ display:none; }
+  .sbj-bottom-nav{
+    display: none !important;
+  }
 }
 
 /* beri ruang konten agar tidak ketutup nav */
 body{
   padding-bottom: calc(64px + env(safe-area-inset-bottom));
+}
+
+    /* MOBILE: sembunyikan floating GIF */
+@media (max-width: 767px){
+  .floating-buttons{
+    display: none !important;
+  }
 }
     
   </style>
@@ -2190,6 +2199,25 @@ function openLiveChat(tryCount = 0){
   }
   alert("Live Chat belum siap. Mohon coba lagi.");
 }
+</script>
+
+  <script>
+(function(){
+  function hideLiveChatOnMobile(){
+    if (window.innerWidth <= 767 && window.LC_API && typeof LC_API.hide_chat_window === "function") {
+      LC_API.hide_chat_window();
+    }
+  }
+
+  // jalankan saat LiveChat siap
+  window.__lc = window.__lc || {};
+  window.__lc.on_after_load = function(){
+    hideLiveChatOnMobile();
+  };
+
+  // jaga-jaga kalau resize / rotate layar
+  window.addEventListener("resize", hideLiveChatOnMobile);
+})();
 </script>
   
 </body>
