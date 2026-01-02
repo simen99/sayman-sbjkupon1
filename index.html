@@ -1217,12 +1217,18 @@ body{
   padding-bottom: calc(64px + env(safe-area-inset-bottom));
 }
 
-    /* MOBILE: sembunyikan floating GIF */
+/* MOBILE: tampilkan container floating, tapi sembunyikan WA & Telegram.
+   Khusus GIF UANG RUPIAH tetap muncul. */
 @media (max-width: 767px){
   .floating-buttons{
+    display: flex !important;
+    bottom: calc(80px + 64px + env(safe-area-inset-bottom)); /* naikkan agar tidak ketutup bottom nav */
+  }
+  .floating-buttons .float-wa,
+  .floating-buttons .float-tg{
     display: none !important;
   }
-}   
+}
 
     .sbj-nav-item.promo{
   color:#FFD700;
@@ -1727,11 +1733,21 @@ document.addEventListener('keydown', (e) => {
 
   <!-- Floating Buttons -->
 <div class="floating-buttons">
-  <a href="https://klikblg.com/wa-sbj" target="_blank" class="float-btn">
+  <a href="https://klikblg.com/wa-sbj" target="_blank" rel="noopener" class="float-btn float-wa">
     <img src="https://cdn.jsdelivr.net/gh/simen99/danakaget-papanataslot1/assets/whats-app.gif" alt="WhatsApp" />
   </a>
-  <a href="https://klikblg.com/tele-sbj" target="_blank" class="float-btn">
+
+  <a href="https://klikblg.com/tele-sbj" target="_blank" rel="noopener" class="float-btn float-tg">
     <img src="https://cdn.jsdelivr.net/gh/simen99/danakaget-papanataslot1/assets/telegram-gif.gif" alt="Telegram" />
+  </a>
+
+  <!-- ✅ GIF BARU: tampil di desktop & mobile, posisinya di bawah telegram -->
+  <a href="https://bukti-kemenangan-slotbangjago.vercel.app/"
+     target="_blank"
+     rel="noopener"
+     class="float-btn float-win">
+    <img src="https://raw.githubusercontent.com/simen99/sayman-sbjkupon1/refs/heads/main/GIF%20UANG%20RUPIAH.gif"
+         alt="Bukti Kemenangan SlotBangJago" />
   </a>
 </div>
 
