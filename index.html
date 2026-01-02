@@ -1205,11 +1205,14 @@ body{ padding-bottom: calc(72px + var(--safe-bottom)); }
   transform: scale(.92);
 }
 
-/* DESKTOP: sembunyikan bottom nav */
-@media (min-width: 768px){
-  .sbj-bottom-nav{
-    display: none !important;
-  }
+/* Desktop (mouse/trackpad): sembunyikan bottom nav */
+@media (hover: hover) and (pointer: fine){
+  .sbj-bottom-nav{ display:none !important; }
+}
+
+/* Mobile (touch): pastikan bottom nav tampil */
+@media (hover: none) and (pointer: coarse){
+  .sbj-bottom-nav{ display:grid !important; }
 }
 
 /* beri ruang konten agar tidak ketutup nav */
