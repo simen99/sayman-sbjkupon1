@@ -1356,6 +1356,30 @@ body{
   }
 }
 
+    /* ===============================
+   DESKTOP: jangan overlap (ikut flow)
+   =============================== */
+@media (min-width: 768px){
+  .float-win.with-text{
+    position: static !important;   /* ikut flow dalam .floating-buttons */
+    left: auto !important;
+    bottom: auto !important;
+    margin-top: 10px;              /* jarak dari Telegram */
+  }
+}
+
+/* ===============================
+   MOBILE: Bukti Jepe dekat bottom
+   =============================== */
+@media (max-width: 767px){
+  .float-win.with-text{
+    position: fixed !important;
+    left: 12px !important;
+    bottom: calc(65px + env(safe-area-inset-bottom) + 8px) !important;
+    z-index: 9999;
+  }
+}
+
   </style>
 
    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
