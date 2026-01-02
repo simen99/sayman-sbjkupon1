@@ -1336,6 +1336,26 @@ body{
   }
 }
 
+    /* ===============================
+   POSISI KHUSUS GIF BUKTI JEPE
+   =============================== */
+
+/* Default (desktop & tablet) */
+.float-win.with-text{
+  position: fixed;
+  left: 12px;
+  bottom: 120px;   /* posisi normal desktop */
+  z-index: 9999;
+}
+
+/* Mobile: turunkan mendekati bottom nav */
+@media (max-width: 767px){
+  .float-win.with-text{
+    bottom: calc(65px + env(safe-area-inset-bottom) + 8px);
+    /* 65px = tinggi bottom nav */
+  }
+}
+
   </style>
 
    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
