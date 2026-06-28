@@ -1386,31 +1386,6 @@
       margin: 0;
     }
 
-    /* ===== GIF Bukti Jepe Floating Text ===== */
-    .float-win.with-text {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding-right: 6px;
-    }
-
-    .float-win.with-text .float-text {
-      font-size: 11px;
-      font-weight: 700;
-      color: #ffd24d;
-      white-space: nowrap;
-      text-shadow: 0 0 6px rgba(255, 210, 77, .6);
-    }
-
-    @media (max-width: 767px) {
-      .float-win.with-text {
-        gap: 5px;
-      }
-      .float-win.with-text .float-text {
-        font-size: 10.5px;
-      }
-    }
-
     /* ===== FLOATING TEXT STYLES ===== */
     .float-btn.with-text {
       display: flex;
@@ -1439,46 +1414,9 @@
       text-shadow: 0 0 6px rgba(42, 171, 238, .45);
     }
 
-    .float-win.with-text .float-text {
-      color: #ffd24d;
-      text-shadow: 0 0 6px rgba(255, 210, 77, .6);
-    }
-
     @media (max-width: 767px) {
       .float-btn.with-text .float-text {
         font-size: 10.5px;
-      }
-    }
-
-    /* ===== FLOATING POSITIONING LOGIC ===== */
-    .float-win.with-text {
-      position: fixed;
-      left: 12px;
-      bottom: 120px;
-      z-index: 9999;
-    }
-
-    @media (max-width: 767px) {
-      .float-win.with-text {
-        bottom: calc(65px + env(safe-area-inset-bottom) + 8px);
-      }
-    }
-
-    @media (min-width: 768px) {
-      .float-win.with-text {
-        position: static !important;
-        left: auto !important;
-        bottom: auto !important;
-        margin-top: 10px;
-      }
-    }
-
-    @media (max-width: 767px) {
-      .float-win.with-text {
-        position: fixed !important;
-        left: 12px !important;
-        bottom: calc(65px + env(safe-area-inset-bottom) + 8px) !important;
-        z-index: 9999;
       }
     }
   </style>
@@ -1974,11 +1912,6 @@
     <a href="https://klikblg.com/tele-sbj" target="_blank" rel="noopener" class="float-btn float-tg with-text">
       <img src="https://cdn.jsdelivr.net/gh/simen99/danakaget-papanataslot1/assets/telegram-gif.gif" alt="Telegram" />
       <span class="float-text">Tele Ofc</span>
-    </a>
-
-    <a href="https://bukti-kemenangan-slotbangjago.vercel.app/" target="_blank" rel="noopener" class="float-btn float-win with-text">
-      <img src="https://raw.githubusercontent.com/simen99/sayman-sbjkupon1/refs/heads/main/GIF%20UANG%20RUPIAH.gif" alt="Bukti Kemenangan SlotBangJago" />
-      <span class="float-text">Bukti Jepe !</span>
     </a>
   </div>
 
